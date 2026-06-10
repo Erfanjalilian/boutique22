@@ -42,8 +42,8 @@ export interface Product {
   price: number;
   images: string[];
   categoryId: string;
-  sizes: string[];
-  colors: string[];
+  sizes?: string[];
+  colors?: string[];
   featured: boolean;
   bestSeller: boolean;
   newArrival: boolean;
@@ -56,9 +56,9 @@ export interface CartItem {
   name: string;
   price: number;
   image: string;
-  size: string;
-  color: string;
   quantity: number;
+  size?: string;
+  color?: string;
 }
 
 export interface OrderItem {
@@ -66,9 +66,9 @@ export interface OrderItem {
   name: string;
   price: number;
   image: string;
-  size: string;
-  color: string;
   quantity: number;
+  size?: string;
+  color?: string;
 }
 
 export interface Order {

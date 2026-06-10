@@ -38,7 +38,7 @@ export function Header({
                 }}
               />
             </div>
-            <span className="text-xl font-bold tracking-tight">ساعتکده آریامهر</span>
+            <span className="text-xl font-bold tracking-tight">فروشگاه جوجه کشی جوجینو</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">

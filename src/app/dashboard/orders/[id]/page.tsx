@@ -46,7 +46,11 @@ export default async function OrderDetailPage({
             {order.items.map((item, i) => (
               <div key={i} className="flex justify-between text-sm py-2 border-b border-border/30 last:border-0">
                 <span>
-                  {item.name} ({item.size}، {item.color}) × {item.quantity}
+                  {item.name}
+                  {(item.size || item.color) &&
+                    ` (${[item.size, item.color].filter(Boolean).join("، ")})`}
+                  {" × "}
+                  {item.quantity}
                 </span>
                 <span>{formatPrice(item.price * item.quantity)}</span>
               </div>

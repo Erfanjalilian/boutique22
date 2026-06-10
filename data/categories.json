@@ -3,30 +3,30 @@
     "id": "cat-001",
     "name": "دسته بندی ۱",
     "slug": "t-shirt",
-    "image": "/Image/ساعت ۵.jpg"
+    "image": "/Image/برق۹.jpg"
   },
   {
     "id": "cat-002",
     "name": "دسته بندی ۲",
     "slug": "jeans",
-    "image": "/Image/ساعت ۸.jpg"
+    "image": "/Image/برق۱۰.jpg"
   },
   {
     "id": "cat-003",
     "name": "دسته بندی ۳",
     "slug": "dresses",
-    "image": "/Image/ساعت۱.jpg"
+    "image": "/Image/برق۶.jpg"
   },
   {
     "id": "cat-004",
     "name": "دسته بندی ۴",
     "slug": "jackets",
-    "image": "/Image/ساعت۲.jpg"
+    "image": "/Image/برق۲.jpg"
   },
   {
     "id": "cat-005",
     "name": "دسته بندی ۵",
     "slug": "accessories",
-    "image": "/Image/ساعت۳.jpg"
+    "image": "/Image/برق۱.jpg"
   }
 ]

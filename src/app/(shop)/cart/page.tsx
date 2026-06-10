@@ -32,16 +32,18 @@ export default function CartPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-4">
           {items.map((item) => (
-            <Card key={`${item.productId}-${item.size}-${item.color}`} className="p-4">
+            <Card key={item.productId} className="p-4">
               <div className="flex gap-4">
                 <div className="relative w-24 h-24 rounded-xl overflow-hidden shrink-0 bg-background">
                   <Image src={item.image} alt={item.name} fill className="object-cover" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-medium truncate">{item.name}</h3>
-                  <p className="text-sm text-muted mt-1">
-                    {item.size} · {item.color}
-                  </p>
+                  {(item.size || item.color) && (
+                    <p className="text-sm text-muted mt-1">
+                      {[item.size, item.color].filter(Boolean).join(" · ")}
+                    </p>
+                  )}
                   <p className="text-primary font-semibold mt-2">
                     {formatPrice(item.price)}
                   </p>
@@ -56,7 +58,7 @@ export default function CartPage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() =>
-                        updateQuantity(item.productId, item.size, item.color, item.quantity - 1)
+                        updateQuantity(item.productId, item.quantity - 1, item.size, item.color)
                       }
                       className="w-8 h-8 rounded-lg border border-border flex items-center justify-center text-sm"
                     >
@@ -65,7 +67,7 @@ export default function CartPage() {
                     <span className="w-8 text-center text-sm">{item.quantity}</span>
                     <button
                       onClick={() =>
-                        updateQuantity(item.productId, item.size, item.color, item.quantity + 1)
+                        updateQuantity(item.productId, item.quantity + 1, item.size, item.color)
                       }
                       className="w-8 h-8 rounded-lg border border-border flex items-center justify-center text-sm"
                     >

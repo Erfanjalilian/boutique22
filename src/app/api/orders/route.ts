@@ -14,8 +14,8 @@ const orderItemSchema = z.object({
   name: z.string(),
   price: z.number(),
   image: z.string(),
-  size: z.string(),
-  color: z.string(),
+  size: z.string().optional(),
+  color: z.string().optional(),
   quantity: z.number().min(1),
 });
 

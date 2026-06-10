@@ -29,7 +29,13 @@ export default async function AdminOrderDetailPage({
         <div className="space-y-2">
           {order.items.map((item, i) => (
             <div key={i} className="flex justify-between text-sm py-2 border-b border-border/30">
-              <span>{item.name} ({item.size}، {item.color}) × {item.quantity}</span>
+              <span>
+                {item.name}
+                {(item.size || item.color) &&
+                  ` (${[item.size, item.color].filter(Boolean).join("، ")})`}
+                {" × "}
+                {item.quantity}
+              </span>
               <span>{formatPrice(item.price * item.quantity)}</span>
             </div>
           ))}
