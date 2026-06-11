@@ -6,8 +6,8 @@ import { useCart } from "@/hooks/useCart";
 import { useState } from "react";
 
 export function Header({
-  websiteName = "بوتیک",
-  logo = "/Image/logo.svg",
+  websiteName = "JOOJINO",
+  logo = "public/Image/jooje.jpg",
 }: {
   websiteName?: string;
   logo?: string;
@@ -23,11 +23,11 @@ export function Header({
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-black/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-3">
-            <div className="relative w-8 h-8 rounded-lg overflow-hidden bg-card">
+            <div className="relative w-8 h-8 rounded-lg overflow-hidden bg-black/5">
               <Image
                 src={logo}
                 alt={websiteName}
@@ -38,7 +38,7 @@ export function Header({
                 }}
               />
             </div>
-            <span className="text-xl font-bold tracking-tight">فروشگاه جوجه کشی جوجینو</span>
+            <span className="text-xl font-bold tracking-tight text-black">JOOJINO</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
@@ -46,7 +46,7 @@ export function Header({
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-muted hover:text-foreground transition-colors"
+                className="text-sm text-black/70 hover:text-black transition-colors"
               >
                 {link.label}
               </Link>
@@ -56,25 +56,25 @@ export function Header({
           <div className="flex items-center gap-4">
             <Link
               href="/cart"
-              className="relative p-2 rounded-xl hover:bg-card transition-colors"
+              className="relative p-2 rounded-xl hover:bg-black/5 transition-colors"
             >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
               {totalItems > 0 && (
-                <span className="absolute -top-1 -start-1 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -start-1 bg-yellow-400 text-black text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
                   {totalItems}
                 </span>
               )}
             </Link>
             <Link
               href="/login"
-              className="hidden sm:inline-flex text-sm px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover transition-colors"
+              className="hidden sm:inline-flex text-sm px-4 py-2 rounded-xl bg-black text-white hover:bg-black/80 transition-colors"
             >
               ورود
             </Link>
             <button
-              className="md:hidden p-2"
+              className="md:hidden p-2 text-black"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="منو"
             >
@@ -90,12 +90,12 @@ export function Header({
         </div>
 
         {menuOpen && (
-          <nav className="md:hidden py-4 border-t border-border/50 animate-fade-in">
+          <nav className="md:hidden py-4 border-t border-black/10 animate-fade-in">
             {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="block py-2 text-muted hover:text-foreground"
+                className="block py-2 text-black/70 hover:text-black"
                 onClick={() => setMenuOpen(false)}
               >
                 {link.label}
@@ -103,7 +103,7 @@ export function Header({
             ))}
             <Link
               href="/login"
-              className="block py-2 text-primary"
+              className="block py-2 text-black font-medium"
               onClick={() => setMenuOpen(false)}
             >
               ورود

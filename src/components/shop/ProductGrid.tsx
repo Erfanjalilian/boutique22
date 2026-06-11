@@ -13,14 +13,14 @@ export function ProductGrid({
   if (products.length === 0) return null;
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-white">
       {(title || subtitle) && (
         <div className="mb-8">
           {title && (
-            <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-black">{title}</h2>
           )}
           {subtitle && (
-            <p className="text-muted mt-2">{subtitle}</p>
+            <p className="text-black/70 mt-2">{subtitle}</p>
           )}
         </div>
       )}
