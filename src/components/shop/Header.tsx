@@ -7,7 +7,7 @@ import { useState } from "react";
 
 export function Header({
   websiteName = "JOOJINO",
-  logo = "public/Image/jooje.jpg",
+  logo = "/Image/domingo_1781261523518.webp",
 }: {
   websiteName?: string;
   logo?: string;
@@ -27,18 +27,16 @@ export function Header({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-3">
-            <div className="relative w-8 h-8 rounded-lg overflow-hidden bg-black/5">
+            {/* Logo with proper display - no gray background */}
+            <div className="relative w-40 h-40">
               <Image
-                src={logo}
+                src={"/Image/domingo_1781261523518.webp"}
                 alt={websiteName}
                 fill
                 className="object-contain"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = "none";
-                }}
+                priority
               />
             </div>
-            <span className="text-xl font-bold tracking-tight text-black">JOOJINO</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
