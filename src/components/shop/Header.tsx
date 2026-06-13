@@ -14,6 +14,8 @@ export function Header({
 }) {
   const { totalItems } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const links = [
     { href: "/", label: "خانه" },
@@ -21,6 +23,13 @@ export function Header({
     { href: "/about", label: "درباره ما" },
     { href: "/contact", label: "تماس" },
   ];
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      window.location.href = `/products?search=${encodeURIComponent(searchQuery)}`;
+    }
+  };
 
   return (
     <>
@@ -53,6 +62,28 @@ export function Header({
             </nav>
 
             <div className="flex items-center gap-4">
+              {/* Search Button & Modal */}
+              <button
+                onClick={() => setSearchOpen(!searchOpen)}
+                className="p-2 rounded-xl hover:bg-black/5 transition-colors"
+                aria-label="جستجو"
+              >
+                <svg className="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+
+              {/* Favorites */}
+              <Link
+                href="/favorites"
+                className="relative p-2 rounded-xl hover:bg-black/5 transition-colors"
+              >
+                <svg className="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </Link>
+
+              {/* Cart */}
               <Link
                 href="/cart"
                 className="relative p-2 rounded-xl hover:bg-black/5 transition-colors"
@@ -66,12 +97,14 @@ export function Header({
                   </span>
                 )}
               </Link>
+
               <Link
                 href="/login"
                 className="hidden sm:inline-flex text-sm px-4 py-2 rounded-xl bg-black text-white hover:bg-black/80 transition-colors"
               >
                 ورود
               </Link>
+
               <button
                 className="md:hidden p-2 text-black"
                 onClick={() => setMenuOpen(!menuOpen)}
@@ -87,6 +120,37 @@ export function Header({
               </button>
             </div>
           </div>
+
+          {/* Search Modal */}
+          {searchOpen && (
+            <div className="absolute top-full left-0 right-0 bg-white border-b border-black/10 shadow-lg p-4 animate-fade-in">
+              <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="جستجوی محصولات..."
+                    className="flex-1 px-4 py-2 border border-black/20 rounded-xl focus:outline-none focus:border-black/50 text-right"
+                    autoFocus
+                  />
+                  <button
+                    type="submit"
+                    className="px-6 py-2 bg-black text-white rounded-xl hover:bg-black/80 transition-colors"
+                  >
+                    جستجو
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSearchOpen(false)}
+                    className="px-4 py-2 border border-black/20 rounded-xl hover:bg-black/5 transition-colors"
+                  >
+                    بستن
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
 
           {menuOpen && (
             <nav className="md:hidden py-4 border-t border-black/10 animate-fade-in">
@@ -126,6 +190,17 @@ export function Header({
             <span className="text-xs">خانه</span>
           </Link>
 
+          {/* Search */}
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="flex flex-col items-center gap-1 text-black/60 hover:text-black transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <span className="text-xs">جستجو</span>
+          </button>
+
           {/* Shop */}
           <Link
             href="/products"
@@ -135,6 +210,17 @@ export function Header({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
             <span className="text-xs">فروشگاه</span>
+          </Link>
+
+          {/* Favorites */}
+          <Link
+            href="/favorites"
+            className="flex flex-col items-center gap-1 text-black/60 hover:text-black transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            <span className="text-xs">علاقه‌مندی</span>
           </Link>
 
           {/* Cart with Badge */}
