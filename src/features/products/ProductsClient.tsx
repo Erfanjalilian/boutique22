@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { Input } from "@/components/ui/Input";
@@ -25,6 +25,19 @@ export function ProductsClient({
   const [maxPrice, setMaxPrice] = useState("");
   const [sort, setSort] = useState("newest");
   const [page, setPage] = useState(1);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  // Prevent body scroll when drawer is open
+  useEffect(() => {
+    if (isDrawerOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isDrawerOpen]);
 
   const filtered = useMemo(() => {
     let result = [...initialProducts];
@@ -72,54 +85,77 @@ export function ProductsClient({
     page * ITEMS_PER_PAGE
   );
 
+  // Filter content component to avoid duplication
+  const FilterContent = () => (
+    <div className="space-y-4">
+      <Input
+        label="جستجو"
+        placeholder="جستجوی محصول..."
+        value={search}
+        onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+      />
+      <Select
+        label="دسته‌بندی"
+        value={category}
+        onChange={(e) => { setCategory(e.target.value); setPage(1); }}
+        options={[
+          { value: "", label: "همه دسته‌ها" },
+          ...categories.map((c) => ({ value: c.id, label: c.name })),
+        ]}
+      />
+      <div className="grid grid-cols-2 gap-3">
+        <Input
+          label="حداقل قیمت"
+          type="number"
+          placeholder="۰"
+          value={minPrice}
+          onChange={(e) => { setMinPrice(e.target.value); setPage(1); }}
+        />
+        <Input
+          label="حداکثر قیمت"
+          type="number"
+          placeholder="۹۹۹۹۹۹۹"
+          value={maxPrice}
+          onChange={(e) => { setMaxPrice(e.target.value); setPage(1); }}
+        />
+      </div>
+      <Select
+        label="مرتب‌سازی"
+        value={sort}
+        onChange={(e) => setSort(e.target.value)}
+        options={[
+          { value: "newest", label: "جدیدترین" },
+          { value: "price-asc", label: "ارزان‌ترین" },
+          { value: "price-desc", label: "گران‌ترین" },
+          { value: "name", label: "نام" },
+        ]}
+      />
+      <Button 
+        className="w-full lg:hidden mt-4" 
+        onClick={() => setIsDrawerOpen(false)}
+      >
+        اعمال فیلترها
+      </Button>
+    </div>
+  );
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold mb-8">همه محصولات</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">همه محصولات</h1>
+        <Button
+          variant="secondary"
+          className="lg:hidden"
+          onClick={() => setIsDrawerOpen(true)}
+        >
+          🔍 فیلتر محصولات
+        </Button>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <aside className="space-y-4">
-          <Input
-            label="جستجو"
-            placeholder="جستجوی محصول..."
-            value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-          />
-          <Select
-            label="دسته‌بندی"
-            value={category}
-            onChange={(e) => { setCategory(e.target.value); setPage(1); }}
-            options={[
-              { value: "", label: "همه دسته‌ها" },
-              ...categories.map((c) => ({ value: c.id, label: c.name })),
-            ]}
-          />
-          <div className="grid grid-cols-2 gap-3">
-            <Input
-              label="حداقل قیمت"
-              type="number"
-              placeholder="۰"
-              value={minPrice}
-              onChange={(e) => { setMinPrice(e.target.value); setPage(1); }}
-            />
-            <Input
-              label="حداکثر قیمت"
-              type="number"
-              placeholder="۹۹۹۹۹۹۹"
-              value={maxPrice}
-              onChange={(e) => { setMaxPrice(e.target.value); setPage(1); }}
-            />
-          </div>
-          <Select
-            label="مرتب‌سازی"
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
-            options={[
-              { value: "newest", label: "جدیدترین" },
-              { value: "price-asc", label: "ارزان‌ترین" },
-              { value: "price-desc", label: "گران‌ترین" },
-              { value: "name", label: "نام" },
-            ]}
-          />
+        {/* Desktop sidebar - hidden on mobile */}
+        <aside className="hidden lg:block space-y-4">
+          <FilterContent />
         </aside>
 
         <div className="lg:col-span-3">
@@ -165,6 +201,39 @@ export function ProductsClient({
           )}
         </div>
       </div>
+
+      {/* Mobile Drawer */}
+      {isDrawerOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/50 z-50 lg:hidden transition-opacity duration-300"
+            onClick={() => setIsDrawerOpen(false)}
+          />
+          
+          {/* Drawer */}
+          <div className="fixed inset-y-0 right-0 w-full max-w-sm bg-background z-50 lg:hidden shadow-xl transform transition-transform duration-300 ease-out">
+            <div className="flex flex-col h-full">
+              {/* Drawer Header */}
+              <div className="flex justify-between items-center p-4 border-b">
+                <h2 className="text-xl font-bold">فیلتر محصولات</h2>
+                <button
+                  onClick={() => setIsDrawerOpen(false)}
+                  className="p-2 rounded-lg hover:bg-muted transition-colors"
+                  aria-label="بستن"
+                >
+                  ✕
+                </button>
+              </div>
+              
+              {/* Drawer Content */}
+              <div className="flex-1 overflow-y-auto p-4">
+                <FilterContent />
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
