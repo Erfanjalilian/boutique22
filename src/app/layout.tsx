@@ -13,6 +13,9 @@ export async function generateMetadata(): Promise<Metadata> {
     title: settings.metaTitle,
     description: settings.metaDescription,
     icons: { icon: settings.favicon || "/Image/logo.svg" },
+    other: {
+      enamad: "18529217",
+    },
   };
 }
 
