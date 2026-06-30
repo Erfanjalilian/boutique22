@@ -65,6 +65,15 @@ export function Footer({
                   پیگیری سفارش
                 </Link>
               </li>
+
+              <li>
+                <Link
+                  href="/login?mode=admin"
+                  className="hover:text-yellow-600 transition-colors"
+                >
+                  پنل مدیریت
+                </Link>
+              </li>
             </ul>
 
             {/* لوگوی اینماد */}

@@ -17,8 +17,13 @@ export async function GET() {
     id: user.id,
     phone: user.phone,
     name: user.name,
+    firstName: user.firstName || user.name.split(" ")[0] || "",
+    lastName: user.lastName || user.name.split(" ").slice(1).join(" ") || "",
+    email: user.email || "",
     address: user.address,
     postalCode: user.postalCode,
+    addresses: user.addresses || [],
+    defaultAddressId: user.defaultAddressId,
     role: user.role,
   });
 }

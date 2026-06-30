@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 
 const SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || "boutique-secret-key-change-in-production"
+  process.env.JWT_SECRET || "boutique-secret-key-change-in-production",
 );
 
 const COOKIE_NAME = "boutique_session";
@@ -19,7 +19,7 @@ async function getSession(request: NextRequest) {
   }
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const session = await getSession(request);
 
@@ -39,8 +39,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (pathname === "/login" && session) {
-    const redirect =
-      session.role === "admin" ? "/admin" : "/dashboard";
+    const redirect = session.role === "admin" ? "/admin" : "/dashboard";
     return NextResponse.redirect(new URL(redirect, request.url));
   }
 

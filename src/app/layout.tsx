@@ -4,6 +4,9 @@ import "@fontsource/vazirmatn/500.css";
 import "@fontsource/vazirmatn/600.css";
 import "@fontsource/vazirmatn/700.css";
 import { CartProvider } from "@/hooks/useCart";
+import { AuthProvider } from "@/hooks/useAuth";
+import { ToastProvider } from "@/hooks/useToast";
+import { ToastContainer } from "@/components/ui/Toast";
 import { getSettings } from "@/lib/repositories";
 import "./globals.css";
 
@@ -27,7 +30,13 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl" className="h-full antialiased">
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
-        <CartProvider>{children}</CartProvider>
+        <ToastProvider>
+          <AuthProvider>
+            <CartProvider>{children}</CartProvider>
+          </AuthProvider>
+          {/* Toast notifications rendered outside the router tree */}
+          <ToastContainer />
+        </ToastProvider>
       </body>
     </html>
   );

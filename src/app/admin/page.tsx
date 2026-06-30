@@ -1,7 +1,16 @@
+import Link from "next/link";
 import { getDashboardStats } from "@/lib/repositories";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { formatPrice, formatDate } from "@/utils/helpers";
+
+const sections = [
+  { href: "/admin/products", label: "مدیریت محصولات", description: "مشاهده، افزودن، ویرایش و حذف محصولات", icon: "👕" },
+  { href: "/admin/orders", label: "مدیریت سفارش‌ها", description: "مشاهده وضعیت سفارش‌ها", icon: "📦" },
+  { href: "/admin/users", label: "مدیریت کاربران", description: "مشاهده لیست کاربران ثبت‌نامی", icon: "👥" },
+  { href: "/admin/about", label: "مدیریت درباره ما", description: "ویرایش متن‌های صفحه درباره ما", icon: "📝" },
+  { href: "/admin/contact", label: "مدیریت تماس با ما", description: "ویرایش اطلاعات تماس و شبکه‌های اجتماعی", icon: "📞" },
+];
 
 export default async function AdminDashboardPage() {
   const stats = await getDashboardStats();
@@ -27,6 +36,22 @@ export default async function AdminDashboardPage() {
               <span className="text-3xl">{stat.icon}</span>
             </div>
           </Card>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-8">
+        {sections.map((section) => (
+          <Link key={section.href} href={section.href}>
+            <Card className="p-6 h-full hover:border-primary/40 transition-colors">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h2 className="font-semibold mb-2">{section.label}</h2>
+                  <p className="text-sm text-muted leading-6">{section.description}</p>
+                </div>
+                <span className="text-2xl">{section.icon}</span>
+              </div>
+            </Card>
+          </Link>
         ))}
       </div>
 

@@ -1,7 +1,12 @@
-import { getOrders } from "@/lib/repositories";
-import { OrdersAdminClient } from "@/features/admin/OrdersAdminClient";
+import { Card } from "@/components/ui/Card";
 
-export default async function AdminOrdersPage() {
-  const orders = await getOrders();
-  return <OrdersAdminClient initialOrders={orders} />;
+export default function AdminOrdersPage() {
+  return (
+    <div className="animate-fade-in">
+      <h1 className="text-2xl font-bold mb-6">مدیریت سفارش‌ها</h1>
+      <Card className="p-8 text-center">
+        <p className="text-lg font-medium">این صفحه هنوز طراحی نشده است.</p>
+      </Card>
+    </div>
+  );
 }

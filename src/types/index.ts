@@ -7,12 +7,28 @@ export type OrderStatus =
   | "Delivered"
   | "Cancelled";
 
+export interface Address {
+  id: string;
+  fullName: string;
+  phone: string;
+  province: string;
+  city: string;
+  streetAddress: string;
+  postalCode: string;
+  isDefault?: boolean;
+}
+
 export interface User {
   id: string;
   phone: string;
   name: string;
   address: string;
   postalCode: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  addresses?: Address[];
+  defaultAddressId?: string;
   role: UserRole;
   createdAt: string;
 }
