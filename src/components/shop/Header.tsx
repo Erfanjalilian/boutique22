@@ -33,9 +33,9 @@ export function Header({
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-black/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+      <header className="sticky top-0 z-50 border-b border-black/10 bg-white/80 backdrop-blur-xl">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
             <Link href="/" className="flex items-center gap-3">
               {/* Logo with proper display - no gray background */}
               <div className="relative w-40 h-40">
@@ -126,32 +126,34 @@ export function Header({
             </div>
           </div>
 
-          {/* Search Modal */}
+          {/* Search Panel */}
           {searchOpen && (
-            <div className="absolute top-full left-0 right-0 bg-white border-b border-black/10 shadow-lg p-4 animate-fade-in">
-              <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
-                <div className="flex gap-2">
+            <div className="border-t border-black/10 bg-white/95 px-3 py-3 shadow-sm sm:px-4 sm:py-4 animate-fade-in">
+              <form onSubmit={handleSearch} className="mx-auto w-full max-w-2xl">
+                <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="جستجوی محصولات..."
-                    className="flex-1 px-4 py-2 border border-black/20 rounded-xl focus:outline-none focus:border-black/50 text-right"
+                    className="w-full min-w-0 flex-1 rounded-xl border border-black/20 px-4 py-2 text-right focus:border-black/50 focus:outline-none"
                     autoFocus
                   />
-                  <button
-                    type="submit"
-                    className="px-6 py-2 bg-black text-white rounded-xl hover:bg-black/80 transition-colors"
-                  >
-                    جستجو
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSearchOpen(false)}
-                    className="px-4 py-2 border border-black/20 rounded-xl hover:bg-black/5 transition-colors"
-                  >
-                    بستن
-                  </button>
+                  <div className="flex flex-wrap items-center justify-end gap-2 sm:flex-nowrap">
+                    <button
+                      type="submit"
+                      className="rounded-xl bg-black px-4 py-2 text-white transition-colors hover:bg-black/80 sm:px-6"
+                    >
+                      جستجو
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSearchOpen(false)}
+                      className="rounded-xl border border-black/20 px-4 py-2 transition-colors hover:bg-black/5"
+                    >
+                      بستن
+                    </button>
+                  </div>
                 </div>
               </form>
             </div>
@@ -260,6 +262,7 @@ export function Header({
         @media (max-width: 768px) {
           body {
             padding-bottom: 70px;
+            overflow-x: hidden;
           }
         }
       `}</style>
