@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useCart } from "@/hooks/useCart";
+import { useToast } from "@/hooks/useToast";
 import { ProductGrid } from "@/components/shop/ProductGrid";
 import { Button } from "@/components/ui/Button";
 import { formatPrice } from "@/utils/helpers";
@@ -17,11 +18,13 @@ export function ProductDetailClient({
   related: Product[];
   categories: Category[];
 }) {
-  const { addItem } = useCart();
+  const { addItem, toggleWishlist, isWishlisted } = useCart();
+  const { toast } = useToast();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [error, setError] = useState("");
+  const liked = isWishlisted(product.id);
 
   const category = categories.find((c) => c.id === product.categoryId);
 
@@ -58,12 +61,38 @@ export function ProductDetailClient({
     setQuantity(newQuantity);
   }
 
+  function handleWishlistToggle() {
+    toggleWishlist(product);
+    toast(liked ? "از علاقه‌مندی‌ها حذف شد" : "به علاقه‌مندی‌ها اضافه شد", "success");
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Image Gallery */}
         <div>
           <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-card border border-border/50">
+            <button
+              type="button"
+              onClick={handleWishlistToggle}
+              className="absolute top-4 left-4 z-10 flex h-12 w-12 items-center justify-center rounded-full border border-white/70 bg-white/90 text-black shadow-lg backdrop-blur transition-transform duration-200 hover:scale-110"
+              aria-label={liked ? "حذف از علاقه‌مندی‌ها" : "افزودن به علاقه‌مندی‌ها"}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                className={`h-6 w-6 transition-all duration-200 ${
+                  liked ? "fill-red-500 text-red-500 scale-110" : "fill-none text-black/70"
+                }`}
+                stroke="currentColor"
+                strokeWidth="1.8"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4.318 6.318a4.5 4.5 0 015.364-1.318L12 7.636l2.318-2.636a4.5 4.5 0 116.364 6.364L12 20.364 4.318 12.682a4.5 4.5 0 010-6.364z"
+                />
+              </svg>
+            </button>
             <Image
               src={product.images[selectedImage] || "/Image/placeholder-product.svg"}
               alt={product.name}

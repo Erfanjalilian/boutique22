@@ -58,6 +58,7 @@ export interface Product {
   price: number;
   images: string[];
   categoryId: string;
+  brand?: string;
   sizes?: string[];
   colors?: string[];
   featured: boolean;

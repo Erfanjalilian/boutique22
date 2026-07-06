@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { Input } from "@/components/ui/Input";
@@ -11,6 +12,58 @@ import type { Product, Category } from "@/types";
 
 const ITEMS_PER_PAGE = 12;
 
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function buildSearchTokens(query: string) {
+  return query
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function matchesProduct(product: Product, tokens: string[], categories: Category[]) {
+  const categoryName = categories.find((item) => item.id === product.categoryId)?.name ?? "";
+  const haystack = [
+    product.name,
+    product.description,
+    categoryName,
+    product.brand ?? "",
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  return tokens.every((token) => haystack.includes(token));
+}
+
+function HighlightedText({ text, query }: { text: string; query: string }) {
+  const tokens = buildSearchTokens(query);
+
+  if (!tokens.length) {
+    return <>{text}</>;
+  }
+
+  const pattern = new RegExp(`(${tokens.map(escapeRegExp).join("|")})`, "ig");
+  const parts = text.split(pattern);
+
+  return (
+    <>
+      {parts.map((part, index) => {
+        const isMatch = tokens.some((token) => token === part.toLowerCase());
+        return isMatch ? (
+          <mark key={`${part}-${index}`} className="rounded bg-yellow-100 px-0.5 text-yellow-700">
+            {part}
+          </mark>
+        ) : (
+          <span key={`${part}-${index}`}>{part}</span>
+        );
+      })}
+    </>
+  );
+}
+
 export function ProductsClient({
   initialProducts,
   categories,
@@ -19,15 +72,15 @@ export function ProductsClient({
   categories: Category[];
 }) {
   const searchParams = useSearchParams();
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(searchParams.get("search") || "");
   const [category, setCategory] = useState(searchParams.get("category") || "");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
+  const [brand, setBrand] = useState(searchParams.get("brand") || "");
+  const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") || "");
+  const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") || "");
   const [sort, setSort] = useState("newest");
   const [page, setPage] = useState(1);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // Prevent body scroll when drawer is open
   useEffect(() => {
     if (isDrawerOpen) {
       document.body.style.overflow = "hidden";
@@ -39,25 +92,55 @@ export function ProductsClient({
     };
   }, [isDrawerOpen]);
 
+  useEffect(() => {
+    const nextSearch = searchParams.get("search") || "";
+    const nextCategory = searchParams.get("category") || "";
+    const nextBrand = searchParams.get("brand") || "";
+    const nextMinPrice = searchParams.get("minPrice") || "";
+    const nextMaxPrice = searchParams.get("maxPrice") || "";
+
+    setSearch(nextSearch);
+    setCategory(nextCategory);
+    setBrand(nextBrand);
+    setMinPrice(nextMinPrice);
+    setMaxPrice(nextMaxPrice);
+    setPage(1);
+  }, [searchParams]);
+
+  const searchTokens = useMemo(() => buildSearchTokens(search), [search]);
+
+  const brandOptions = useMemo(() => {
+    return Array.from(
+      new Set(initialProducts.map((product) => product.brand).filter(Boolean))
+    ).sort() as string[];
+  }, [initialProducts]);
+
+  const suggestions = useMemo(() => {
+    if (!searchTokens.length) return [];
+
+    return initialProducts
+      .filter((product) => matchesProduct(product, searchTokens, categories))
+      .slice(0, 6);
+  }, [categories, initialProducts, searchTokens]);
+
   const filtered = useMemo(() => {
     let result = [...initialProducts];
 
-    if (search) {
-      const q = search.toLowerCase();
-      result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q)
-      );
+    if (searchTokens.length) {
+      result = result.filter((product) => matchesProduct(product, searchTokens, categories));
     }
 
     if (category) {
-      result = result.filter((p) => p.categoryId === category);
+      result = result.filter((product) => product.categoryId === category);
+    }
+
+    if (brand) {
+      result = result.filter((product) => product.brand === brand);
     }
 
     const min = minPrice ? Number(minPrice) : 0;
     const max = maxPrice ? Number(maxPrice) : Infinity;
-    result = result.filter((p) => p.price >= min && p.price <= max);
+    result = result.filter((product) => product.price >= min && product.price <= max);
 
     switch (sort) {
       case "price-asc":
@@ -71,58 +154,99 @@ export function ProductsClient({
         break;
       default:
         result.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
     }
 
     return result;
-  }, [initialProducts, search, category, minPrice, maxPrice, sort]);
+  }, [brand, categories, category, initialProducts, maxPrice, minPrice, searchTokens, sort]);
 
-  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
-  const paginated = filtered.slice(
-    (page - 1) * ITEMS_PER_PAGE,
-    page * ITEMS_PER_PAGE
-  );
+  useEffect(() => {
+    setPage(1);
+  }, [search, category, brand, minPrice, maxPrice, sort]);
 
-  // Filter content component to avoid duplication
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+  const hasActiveFilters = Boolean(search.trim() || category || brand || minPrice || maxPrice || sort !== "newest");
+
   const FilterContent = () => (
     <div className="space-y-4">
-      <Input
-        label="جستجو"
-        placeholder="جستجوی محصول..."
-        value={search}
-        onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-      />
+      <div className="relative">
+        <Input
+          label="جستجو"
+          placeholder="نام محصول، دسته‌بندی یا برند..."
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+        />
+        {suggestions.length > 0 && search.trim() && (
+          <div className="absolute left-0 right-0 top-full z-20 mt-2 rounded-2xl border border-black/10 bg-white p-3 shadow-xl">
+            {suggestions.map((product) => {
+              const categoryName = categories.find((item) => item.id === product.categoryId)?.name ?? "";
+              return (
+                <Link
+                  key={product.id}
+                  href={`/products/${product.id}`}
+                  className="flex items-center justify-between rounded-xl px-3 py-2 text-sm transition-colors hover:bg-yellow-50"
+                >
+                  <span className="text-right">
+                    <span className="block font-medium text-black">
+                      <HighlightedText text={product.name} query={search} />
+                    </span>
+                    <span className="mt-0.5 block text-xs text-black/60">
+                      {categoryName} {product.brand ? `• ${product.brand}` : ""}
+                    </span>
+                  </span>
+                  <span className="text-xs font-medium text-yellow-600">مشاهده</span>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
       <Select
         label="دسته‌بندی"
         value={category}
-        onChange={(e) => { setCategory(e.target.value); setPage(1); }}
+        onChange={(event) => setCategory(event.target.value)}
         options={[
           { value: "", label: "همه دسته‌ها" },
-          ...categories.map((c) => ({ value: c.id, label: c.name })),
+          ...categories.map((item) => ({ value: item.id, label: item.name })),
         ]}
       />
+
+      {brandOptions.length > 0 && (
+        <Select
+          label="برند"
+          value={brand}
+          onChange={(event) => setBrand(event.target.value)}
+          options={[
+            { value: "", label: "همه برندها" },
+            ...brandOptions.map((item) => ({ value: item, label: item })),
+          ]}
+        />
+      )}
+
       <div className="grid grid-cols-2 gap-3">
         <Input
           label="حداقل قیمت"
           type="number"
           placeholder="۰"
           value={minPrice}
-          onChange={(e) => { setMinPrice(e.target.value); setPage(1); }}
+          onChange={(event) => setMinPrice(event.target.value)}
         />
         <Input
           label="حداکثر قیمت"
           type="number"
           placeholder="۹۹۹۹۹۹۹"
           value={maxPrice}
-          onChange={(e) => { setMaxPrice(e.target.value); setPage(1); }}
+          onChange={(event) => setMaxPrice(event.target.value)}
         />
       </div>
+
       <Select
         label="مرتب‌سازی"
         value={sort}
-        onChange={(e) => setSort(e.target.value)}
+        onChange={(event) => setSort(event.target.value)}
         options={[
           { value: "newest", label: "جدیدترین" },
           { value: "price-asc", label: "ارزان‌ترین" },
@@ -130,69 +254,133 @@ export function ProductsClient({
           { value: "name", label: "نام" },
         ]}
       />
-      <Button 
-        className="w-full lg:hidden mt-4" 
-        onClick={() => setIsDrawerOpen(false)}
-      >
+
+      {hasActiveFilters && (
+        <Button
+          variant="secondary"
+          className="w-full"
+          onClick={() => {
+            setSearch("");
+            setCategory("");
+            setBrand("");
+            setMinPrice("");
+            setMaxPrice("");
+            setSort("newest");
+          }}
+        >
+          پاک‌کردن فیلترها
+        </Button>
+      )}
+
+      <Button className="w-full lg:hidden" onClick={() => setIsDrawerOpen(false)}>
         اعمال فیلترها
       </Button>
     </div>
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">همه محصولات</h1>
-        <Button
-          variant="secondary"
-          className="lg:hidden"
-          onClick={() => setIsDrawerOpen(true)}
-        >
-          🔍 فیلتر محصولات
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="rounded-[2rem] border border-black/10 bg-gradient-to-br from-white via-yellow-50/70 to-white p-6 shadow-sm sm:p-8">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold text-yellow-600">جستجوی هوشمند</p>
+            <h1 className="mt-2 text-3xl font-bold text-black sm:text-4xl">محصول موردنظر را سریع پیدا کنید</h1>
+            <p className="mt-3 text-sm leading-7 text-black/70 sm:text-base">
+              با جستجو در نام محصول، دسته‌بندی، برند و محدوده قیمت، نتیجه‌های مرتبط و دقیق را در چند لحظه ببینید.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-black/10 bg-white/80 p-4 shadow-sm">
+            <p className="text-sm font-medium text-black">محصولات موجود</p>
+            <p className="mt-1 text-3xl font-bold text-yellow-600">{initialProducts.length}</p>
+            <p className="text-sm text-black/60">در انبار و قابل سفارش</p>
+          </div>
+        </div>
+
+        <div className="mt-6 rounded-[1.5rem] border border-black/10 bg-white/90 p-4 shadow-sm">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-1 items-center gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3">
+              <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-yellow-600">
+                <path fill="currentColor" d="M10.5 4a6.5 6.5 0 015.2 11.2l4.3 4.3-1.4 1.4-4.3-4.3A6.5 6.5 0 1110.5 4zm0 2a4.5 4.5 0 100 9 4.5 4.5 0 000-9z" />
+              </svg>
+              <input
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="جستجوی محصولات..."
+                className="w-full border-0 bg-transparent text-right text-sm outline-none placeholder:text-black/40"
+              />
+            </div>
+            <Button variant="secondary" className="md:min-w-40" onClick={() => setIsDrawerOpen(true)}>
+              فیلتر و مرتب‌سازی
+            </Button>
+          </div>
+
+          {search.trim() && suggestions.length > 0 && (
+            <div className="mt-4 rounded-2xl border border-black/10 bg-white p-3">
+              <p className="mb-2 text-sm font-medium text-black">پیشنهادهای سریع</p>
+              <div className="flex flex-wrap gap-2">
+                {suggestions.map((product) => {
+                  const categoryName = categories.find((item) => item.id === product.categoryId)?.name ?? "";
+                  return (
+                    <Link
+                      key={product.id}
+                      href={`/products/${product.id}`}
+                      className="rounded-full border border-black/10 bg-yellow-50 px-3 py-1.5 text-sm text-black transition-colors hover:bg-yellow-100"
+                    >
+                      <HighlightedText text={product.name} query={search} />
+                      {categoryName ? ` · ${categoryName}` : ""}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-8 flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-black">نتایج جستجو</h2>
+          <p className="mt-1 text-sm text-black/70">
+            {filtered.length > 0
+              ? `نمایش ${paginated.length} از ${filtered.length} محصول برای «${search || "همه محصولات"}»`
+              : "هیچ نتیجه‌ای با این شرایط یافت نشد."}
+          </p>
+        </div>
+        <Button variant="secondary" className="hidden lg:inline-flex" onClick={() => setIsDrawerOpen(true)}>
+          فیلتر‌ها
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Desktop sidebar - hidden on mobile */}
+      <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-4">
         <aside className="hidden lg:block space-y-4">
-          <FilterContent />
+          <div className="rounded-[1.5rem] border border-black/10 bg-white p-5 shadow-sm">
+            <FilterContent />
+          </div>
         </aside>
 
         <div className="lg:col-span-3">
           {paginated.length === 0 ? (
             <EmptyState
               title="محصولی یافت نشد"
-              description="فیلترها یا عبارت جستجو را تغییر دهید."
+              description="عبارت جستجو یا فیلترهای انتخابی را تغییر دهید تا نتیجه‌های جدیدی ببینید."
             />
           ) : (
             <>
-              <p className="text-sm text-muted mb-4">
-                نمایش {paginated.length} از {filtered.length} محصول
-              </p>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6">
                 {paginated.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
+
               {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-2 mt-8">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    disabled={page === 1}
-                    onClick={() => setPage(page - 1)}
-                  >
+                <div className="mt-8 flex items-center justify-center gap-2">
+                  <Button variant="secondary" size="sm" disabled={page === 1} onClick={() => setPage(page - 1)}>
                     قبلی
                   </Button>
-                  <span className="text-sm text-muted px-4">
+                  <span className="px-4 text-sm text-black/70">
                     صفحه {page} از {totalPages}
                   </span>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    disabled={page === totalPages}
-                    onClick={() => setPage(page + 1)}
-                  >
+                  <Button variant="secondary" size="sm" disabled={page === totalPages} onClick={() => setPage(page + 1)}>
                     بعدی
                   </Button>
                 </div>
@@ -202,31 +390,17 @@ export function ProductsClient({
         </div>
       </div>
 
-      {/* Mobile Drawer */}
       {isDrawerOpen && (
         <>
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-black/50 z-50 lg:hidden transition-opacity duration-300"
-            onClick={() => setIsDrawerOpen(false)}
-          />
-          
-          {/* Drawer */}
-          <div className="fixed inset-y-0 right-0 w-full max-w-sm bg-background z-50 lg:hidden shadow-xl transform transition-transform duration-300 ease-out">
-            <div className="flex flex-col h-full">
-              {/* Drawer Header */}
-              <div className="flex justify-between items-center p-4 border-b">
-                <h2 className="text-xl font-bold">فیلتر محصولات</h2>
-                <button
-                  onClick={() => setIsDrawerOpen(false)}
-                  className="p-2 rounded-lg hover:bg-muted transition-colors"
-                  aria-label="بستن"
-                >
+          <div className="fixed inset-0 z-50 bg-black/50 lg:hidden" onClick={() => setIsDrawerOpen(false)} />
+          <div className="fixed inset-y-0 right-0 z-50 w-full max-w-sm bg-background shadow-xl lg:hidden">
+            <div className="flex h-full flex-col">
+              <div className="flex items-center justify-between border-b border-black/10 p-4">
+                <h2 className="text-xl font-bold text-black">فیلتر محصولات</h2>
+                <button onClick={() => setIsDrawerOpen(false)} className="rounded-lg p-2 hover:bg-black/5" aria-label="بستن">
                   ✕
                 </button>
               </div>
-              
-              {/* Drawer Content */}
               <div className="flex-1 overflow-y-auto p-4">
                 <FilterContent />
               </div>

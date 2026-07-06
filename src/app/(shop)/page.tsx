@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { HeroSection } from "@/components/shop/HeroSection";
 import { ProductGrid } from "@/components/shop/ProductGrid";
 import { CategoryGrid } from "@/components/shop/CategoryGrid";
@@ -54,9 +55,12 @@ export default async function HomePage() {
             <p className="text-white/90 mb-6 max-w-lg mx-auto">
               اولین نفری باشید که استایل‌های جدید را می‌پوشید. کالکشن تازه با بهترین کیفیت.
             </p>
-            <div className="inline-flex px-6 py-3 bg-white text-black hover:bg-black/10 hover:text-white rounded-xl font-medium transition-colors cursor-pointer">
+            <Link
+              href="/products"
+              className="inline-flex px-6 py-3 bg-white text-black hover:bg-black/10 hover:text-white rounded-xl font-medium transition-colors cursor-pointer"
+            >
               مشاهده محصولات جدید
-            </div>
+            </Link>
           </div>
         </div>
       </section>
@@ -96,9 +100,12 @@ export default async function HomePage() {
             <p className="text-white/90 mb-6 max-w-lg mx-auto">
               محصولاتی که دیگران عاشقشون شدن. بهترین انتخاب‌ها با تخفیف ویژه.
             </p>
-            <div className="inline-flex px-6 py-3 bg-yellow-500 text-black hover:bg-yellow-600 rounded-xl font-medium transition-colors cursor-pointer">
+            <Link
+              href="/products"
+              className="inline-flex px-6 py-3 bg-yellow-500 text-black hover:bg-yellow-600 rounded-xl font-medium transition-colors cursor-pointer"
+            >
               مشاهده پرفروش‌ها
-            </div>
+            </Link>
           </div>
         </div>
       </section>

@@ -8,10 +8,15 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import type { CartItem } from "@/types";
+import { useAuth } from "@/hooks/useAuth";
+import type { CartItem, Product } from "@/types";
 
 function cartItemKey(item: Pick<CartItem, "productId" | "size" | "color">) {
   return `${item.productId}:${item.size ?? ""}:${item.color ?? ""}`;
+}
+
+function wishlistStorageKey(userId?: string | null) {
+  return userId ? `boutique_wishlist:${userId}` : "boutique_wishlist";
 }
 
 interface CartContextType {
@@ -27,6 +32,14 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  wishlistItems: Product[];
+  toggleWishlist: (product: Product) => void;
+  addToWishlist: (product: Product) => void;
+  removeFromWishlist: (productId: string) => void;
+  isWishlisted: (productId: string) => boolean;
+  clearWishlist: () => void;
+  wishlistCount: number;
+  moveToCart: (product: Product, quantity?: number) => void;
 }
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -34,12 +47,15 @@ const CartContext = createContext<CartContextType | null>(null);
 const CART_KEY = "boutique_cart";
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const { user, loading } = useAuth();
   const [items, setItems] = useState<CartItem[]>([]);
+  const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [wishlistLoaded, setWishlistLoaded] = useState(false);
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(CART_KEY);
+      const stored = window.localStorage.getItem(CART_KEY);
       if (stored) setItems(JSON.parse(stored));
     } catch {
       // ignore
@@ -49,9 +65,31 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (loaded) {
-      localStorage.setItem(CART_KEY, JSON.stringify(items));
+      window.localStorage.setItem(CART_KEY, JSON.stringify(items));
     }
   }, [items, loaded]);
+
+  useEffect(() => {
+    if (loading) return;
+
+    try {
+      const stored = window.localStorage.getItem(wishlistStorageKey(user?.id ?? null));
+      setWishlistItems(stored ? JSON.parse(stored) : []);
+    } catch {
+      setWishlistItems([]);
+    }
+
+    setWishlistLoaded(true);
+  }, [loading, user?.id]);
+
+  useEffect(() => {
+    if (!wishlistLoaded || loading) return;
+
+    window.localStorage.setItem(
+      wishlistStorageKey(user?.id ?? null),
+      JSON.stringify(wishlistItems)
+    );
+  }, [wishlistItems, wishlistLoaded, loading, user?.id]);
 
   const addItem = useCallback((item: CartItem) => {
     const key = cartItemKey(item);
@@ -92,11 +130,54 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = useCallback(() => setItems([]), []);
 
+  const toggleWishlist = useCallback((product: Product) => {
+    setWishlistItems((prev) => {
+      const exists = prev.some((item) => item.id === product.id);
+      if (exists) {
+        return prev.filter((item) => item.id !== product.id);
+      }
+      return [product, ...prev];
+    });
+  }, []);
+
+  const addToWishlist = useCallback((product: Product) => {
+    setWishlistItems((prev) => {
+      if (prev.some((item) => item.id === product.id)) return prev;
+      return [product, ...prev];
+    });
+  }, []);
+
+  const removeFromWishlist = useCallback((productId: string) => {
+    setWishlistItems((prev) => prev.filter((item) => item.id !== productId));
+  }, []);
+
+  const isWishlisted = useCallback(
+    (productId: string) => wishlistItems.some((item) => item.id === productId),
+    [wishlistItems]
+  );
+
+  const clearWishlist = useCallback(() => setWishlistItems([]), []);
+
+  const moveToCart = useCallback(
+    (product: Product, quantity = 1) => {
+      addItem({
+        productId: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.images[0] || "/Image/placeholder-product.svg",
+        quantity,
+      });
+      removeFromWishlist(product.id);
+    },
+    [addItem, removeFromWishlist]
+  );
+
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
   const totalPrice = items.reduce(
     (sum, i) => sum + i.price * i.quantity,
     0
   );
+  const wishlistCount = wishlistItems.length;
 
   return (
     <CartContext.Provider
@@ -108,6 +189,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         totalItems,
         totalPrice,
+        wishlistItems,
+        toggleWishlist,
+        addToWishlist,
+        removeFromWishlist,
+        isWishlisted,
+        clearWishlist,
+        wishlistCount,
+        moveToCart,
       }}
     >
       {children}
