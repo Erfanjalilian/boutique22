@@ -34,13 +34,18 @@ export async function PUT(
   const parsed = productSchema.safeParse(body);
   if (!parsed.success) return apiError(parsed.error.issues[0].message);
 
-  const products = await getProducts();
-  const idx = products.findIndex((p) => p.id === id);
-  if (idx === -1) return apiError("Product not found", 404);
+  try {
+    const products = await getProducts();
+    const idx = products.findIndex((p) => p.id === id);
+    if (idx === -1) return apiError("Product not found", 404);
 
-  products[idx] = { ...products[idx], ...parsed.data };
-  await saveProducts(products);
-  return apiSuccess(products[idx]);
+    products[idx] = { ...products[idx], ...parsed.data };
+    await saveProducts(products);
+    return apiSuccess(products[idx]);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Internal server error";
+    return apiError(message, 500);
+  }
 }
 
 export async function DELETE(
@@ -50,11 +55,16 @@ export async function DELETE(
   if (!(await requireAdmin())) return apiError("Unauthorized", 401);
 
   const { id } = await params;
-  const products = await getProducts();
-  const filtered = products.filter((p) => p.id !== id);
-  if (filtered.length === products.length) {
-    return apiError("Product not found", 404);
+  try {
+    const products = await getProducts();
+    const filtered = products.filter((p) => p.id !== id);
+    if (filtered.length === products.length) {
+      return apiError("Product not found", 404);
+    }
+    await saveProducts(filtered);
+    return apiSuccess({ message: "Product deleted" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Internal server error";
+    return apiError(message, 500);
   }
-  await saveProducts(filtered);
-  return apiSuccess({ message: "Product deleted" });
 }

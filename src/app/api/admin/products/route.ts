@@ -47,7 +47,8 @@ export async function POST(request: Request) {
     products.push(product);
     await saveProducts(products);
     return apiSuccess(product, 201);
-  } catch {
-    return apiError("Internal server error", 500);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Internal server error";
+    return apiError(message, 500);
   }
 }
