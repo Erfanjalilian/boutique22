@@ -1,4 +1,5 @@
-import { readJson, writeJson, readJsonObject } from "@/lib/storage";
+import { mkdir, readFile, writeFile } from "fs/promises";
+import path from "path";
 import type {
   User,
   Product,
@@ -14,8 +15,38 @@ import type {
   OrderStatus,
 } from "@/types";
 
+const DATA_DIR = path.join(process.cwd(), "data");
+
+async function readJson<T>(fileName: string, fallback: T): Promise<T> {
+  const filePath = path.join(DATA_DIR, fileName);
+
+  try {
+    const content = await readFile(filePath, "utf8");
+    return JSON.parse(content) as T;
+  } catch (error: unknown) {
+    if (typeof error === "object" && error !== null && "code" in error) {
+      const code = (error as { code?: string }).code;
+      if (code === "ENOENT") {
+        return fallback;
+      }
+    }
+
+    throw error;
+  }
+}
+
+async function readJsonObject<T>(fileName: string, fallback: T): Promise<T> {
+  return readJson<T>(fileName, fallback);
+}
+
+async function writeJson<T>(fileName: string, data: T): Promise<void> {
+  const filePath = path.join(DATA_DIR, fileName);
+  await mkdir(DATA_DIR, { recursive: true });
+  await writeFile(filePath, JSON.stringify(data, null, 2), "utf8");
+}
+
 export async function getUsers(): Promise<User[]> {
-  return readJson<User[]>("users.json");
+  return readJson<User[]>("users.json", []);
 }
 
 export async function saveUsers(users: User[]): Promise<void> {
@@ -33,7 +64,7 @@ export async function getUserByPhone(phone: string): Promise<User | undefined> {
 }
 
 export async function getProducts(): Promise<Product[]> {
-  return readJson<Product[]>("products.json");
+  return readJson<Product[]>("products.json", []);
 }
 
 export async function saveProducts(products: Product[]): Promise<void> {
@@ -46,7 +77,7 @@ export async function getProductById(id: string): Promise<Product | undefined> {
 }
 
 export async function getOrders(): Promise<Order[]> {
-  return readJson<Order[]>("orders.json");
+  return readJson<Order[]>("orders.json", []);
 }
 
 export async function saveOrders(orders: Order[]): Promise<void> {
@@ -64,7 +95,7 @@ export async function getOrdersByUserId(userId: string): Promise<Order[]> {
 }
 
 export async function getCategories(): Promise<Category[]> {
-  return readJson<Category[]>("categories.json");
+  return readJson<Category[]>("categories.json", []);
 }
 
 export async function saveCategories(categories: Category[]): Promise<void> {
@@ -72,7 +103,7 @@ export async function saveCategories(categories: Category[]): Promise<void> {
 }
 
 export async function getSizes(): Promise<Size[]> {
-  return readJson<Size[]>("sizes.json");
+  return readJson<Size[]>("sizes.json", []);
 }
 
 export async function saveSizes(sizes: Size[]): Promise<void> {
@@ -80,7 +111,7 @@ export async function saveSizes(sizes: Size[]): Promise<void> {
 }
 
 export async function getColors(): Promise<Color[]> {
-  return readJson<Color[]>("colors.json");
+  return readJson<Color[]>("colors.json", []);
 }
 
 export async function saveColors(colors: Color[]): Promise<void> {
@@ -88,7 +119,7 @@ export async function saveColors(colors: Color[]): Promise<void> {
 }
 
 export async function getOtps(): Promise<OtpRecord[]> {
-  return readJson<OtpRecord[]>("otps.json");
+  return readJson<OtpRecord[]>("otps.json", []);
 }
 
 export async function saveOtps(otps: OtpRecord[]): Promise<void> {
@@ -139,7 +170,7 @@ export async function saveContact(contact: ContactInfo): Promise<void> {
 }
 
 export async function getBanners(): Promise<SiteBanner[]> {
-  return readJson<SiteBanner[]>("banners.json");
+  return readJson<SiteBanner[]>("banners.json", []);
 }
 
 export async function saveBanners(banners: SiteBanner[]): Promise<void> {
