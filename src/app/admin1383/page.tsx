@@ -1,5 +1,3 @@
-import { getSession } from "@/lib/auth";
-import { redirect } from "next/navigation";
 import { getDashboardStats } from "@/lib/repositories";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -16,12 +14,6 @@ const sections = [
 ];
 
 export default async function Admin1383Page() {
-  const session = await getSession();
-
-  if (!session || session.role !== "admin") {
-    redirect("/login?mode=admin");
-  }
-
   const stats = await getDashboardStats();
 
   return (
