@@ -3,15 +3,20 @@ import path from "path";
 
 function getCandidateDataDirs(): string[] {
   const configuredDir = process.env.DATA_DIR?.trim();
-  const candidates = [
-    configuredDir,
-    path.join(process.cwd(), "data"),
-    path.join(process.cwd(), "..", "data"),
-    path.join("/var", "www", "data"),
-    path.join("/tmp", "boutique-data"),
-  ].filter((value): value is string => Boolean(value));
+  const cwd = process.cwd();
+  const candidates: string[] = [];
 
-  return Array.from(new Set(candidates));
+  if (configuredDir) {
+    candidates.push(path.resolve(configuredDir));
+  }
+
+  candidates.push(path.resolve(cwd, "data"));
+  candidates.push(path.resolve(cwd, "..", "data"));
+  candidates.push(path.resolve(cwd, "..", "..", "data"));
+  candidates.push(path.join("/var", "www", "data"));
+  candidates.push(path.join("/tmp", "boutique-data"));
+
+  return Array.from(new Set(candidates.filter(Boolean)));
 }
 
 let cachedDataDir: string | null = null;
@@ -21,7 +26,18 @@ async function resolveDataDir(): Promise<string> {
     return cachedDataDir;
   }
 
-  for (const dir of getCandidateDataDirs()) {
+  const preferredDataDir = path.resolve(process.cwd(), "data");
+
+  try {
+    await fs.mkdir(preferredDataDir, { recursive: true });
+    await fs.access(preferredDataDir);
+    cachedDataDir = preferredDataDir;
+    return preferredDataDir;
+  } catch {
+    // Fall back to the next candidate directory if the project data folder is not writable.
+  }
+
+  for (const dir of getCandidateDataDirs().filter((value) => value !== preferredDataDir)) {
     try {
       await fs.mkdir(dir, { recursive: true });
       await fs.access(dir);
