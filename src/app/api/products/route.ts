@@ -1,4 +1,4 @@
-import { getProducts, getCategories } from "@/lib/repositories";
+import { getProducts, getCategories } from "@/lib/data";
 import { apiSuccess } from "@/utils/api";
 
 export async function GET(request: Request) {

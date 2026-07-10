@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { sendOtp } from "@/services/sms";
-import { getOtps, saveOtps } from "@/lib/repositories";
+import { getOtps, saveOtps } from "@/lib/data";
 import { generateOtp } from "@/utils/helpers";
 import { apiSuccess, apiError } from "@/utils/api";
 

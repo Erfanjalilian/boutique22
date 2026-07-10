@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getOrderById } from "@/lib/repositories";
+import { getOrderById } from "@/lib/data";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { formatPrice, formatDate } from "@/utils/helpers";

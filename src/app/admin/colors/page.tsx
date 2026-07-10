@@ -1,4 +1,4 @@
-import { getColors } from "@/lib/repositories";
+import { getColors } from "@/lib/data";
 import { SimpleCrudAdmin } from "@/features/admin/SimpleCrudAdmin";
 
 export default async function AdminColorsPage() {

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { getSession } from "@/lib/auth";
-import { getCategories, saveCategories } from "@/lib/repositories";
+import { getCategories, saveCategories } from "@/lib/data";
 import { generateId, slugify } from "@/utils/helpers";
 import { apiSuccess, apiError } from "@/utils/api";
 

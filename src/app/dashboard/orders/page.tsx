@@ -1,5 +1,5 @@
 import { getSession } from "@/lib/auth";
-import { getOrdersByUserId } from "@/lib/repositories";
+import { getOrdersByUserId } from "@/lib/data";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";

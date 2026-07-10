@@ -2,7 +2,7 @@ import { HeroSection } from "@/components/shop/HeroSection";
 import { ProductGrid } from "@/components/shop/ProductGrid";
 import { CategoryGrid } from "@/components/shop/CategoryGrid";
 import { PromoBanner } from "@/components/shop/PromoBanner";
-import { getProducts, getCategories, getBanners } from "@/lib/repositories";
+import { getProducts, getCategories, getBanners } from "@/lib/data";
 
 export default async function HomePage() {
   const [products, categories, banners] = await Promise.all([

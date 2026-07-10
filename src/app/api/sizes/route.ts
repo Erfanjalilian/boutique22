@@ -1,4 +1,4 @@
-import { getSizes } from "@/lib/repositories";
+import { getSizes } from "@/lib/data";
 import { apiSuccess } from "@/utils/api";
 
 export async function GET() {

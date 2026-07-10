@@ -1,4 +1,4 @@
-import { getUsers } from "@/lib/repositories";
+import { getUsers } from "@/lib/data";
 import { UsersAdminClient } from "@/features/admin/UsersAdminClient";
 
 export default async function AdminUsersPage() {

@@ -5,7 +5,7 @@ import {
   saveOrders,
   getOrdersByUserId,
   getUserById,
-} from "@/lib/repositories";
+} from "@/lib/data";
 import { generateId } from "@/utils/helpers";
 import { apiSuccess, apiError } from "@/utils/api";
 
@@ -81,7 +81,7 @@ export async function POST(request: Request) {
 
     const user = await getUserById(session.userId);
     if (user && !user.name) {
-      const { getUsers, saveUsers } = await import("@/lib/repositories");
+      const { getUsers, saveUsers } = await import("@/lib/data");
       const users = await getUsers();
       const idx = users.findIndex((u) => u.id === user.id);
       if (idx !== -1) {

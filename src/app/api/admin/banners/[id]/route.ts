@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { getSession } from "@/lib/auth";
-import { getBanners, saveBanners } from "@/lib/repositories";
+import { getBanners, saveBanners } from "@/lib/data";
 import { apiSuccess, apiError } from "@/utils/api";
 
 const bannerSchema = z.object({

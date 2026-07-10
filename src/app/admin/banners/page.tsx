@@ -1,4 +1,4 @@
-import { getBanners } from "@/lib/repositories";
+import { getBanners } from "@/lib/data";
 import { BannersAdminClient } from "@/features/admin/BannersAdminClient";
 
 export default async function AdminBannersPage() {

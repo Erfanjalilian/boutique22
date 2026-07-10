@@ -1,4 +1,4 @@
-import { getContact } from "@/lib/repositories";
+import { getContact } from "@/lib/data";
 import { apiSuccess } from "@/utils/api";
 
 export async function GET() {

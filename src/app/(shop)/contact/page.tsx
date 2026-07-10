@@ -1,4 +1,4 @@
-import { getContact } from "@/lib/repositories";
+import { getContact } from "@/lib/data";
 import { Card } from "@/components/ui/Card";
 
 export default async function ContactPage() {

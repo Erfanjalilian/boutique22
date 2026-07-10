@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createSession, setSessionCookie } from "@/lib/auth";
-import { getUserByPhone } from "@/lib/repositories";
+import { getUserByPhone } from "@/lib/data";
 import { apiSuccess, apiError } from "@/utils/api";
 
 const schema = z.object({

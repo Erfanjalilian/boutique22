@@ -1,6 +1,6 @@
 import { Header } from "@/components/shop/Header";
 import { Footer } from "@/components/shop/Footer";
-import { getSettings } from "@/lib/repositories";
+import { getSettings } from "@/lib/data";
 
 export default async function ShopLayout({
   children,

@@ -1,4 +1,4 @@
-import { getProducts, getCategories } from "@/lib/repositories";
+import { getProducts, getCategories } from "@/lib/data";
 import { ProductsAdminClient } from "@/features/admin/ProductsAdminClient";
 
 export default async function AdminProductsPage() {

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getProductById } from "@/lib/repositories";
+import { getProductById } from "@/lib/data";
 import { ProductForm } from "@/features/admin/ProductForm";
 
 export default async function EditProductPage({

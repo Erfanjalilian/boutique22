@@ -1,4 +1,4 @@
-import { getAbout } from "@/lib/repositories";
+import { getAbout } from "@/lib/data";
 import { Card } from "@/components/ui/Card";
 
 export default async function AboutPage() {

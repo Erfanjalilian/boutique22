@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { getSession } from "@/lib/auth";
-import { getColors, saveColors } from "@/lib/repositories";
+import { getColors, saveColors } from "@/lib/data";
 import { generateId } from "@/utils/helpers";
 import { apiSuccess, apiError } from "@/utils/api";
 

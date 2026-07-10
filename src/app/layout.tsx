@@ -7,7 +7,7 @@ import { CartProvider } from "@/hooks/useCart";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ToastProvider } from "@/hooks/useToast";
 import { ToastContainer } from "@/components/ui/Toast";
-import { getSettings } from "@/lib/repositories";
+import { getSettings } from "@/lib/data";
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {

@@ -1,4 +1,4 @@
-import { getAbout } from "@/lib/repositories";
+import { getAbout } from "@/lib/data";
 import { AboutAdminClient } from "@/features/admin/AboutAdminClient";
 
 export default async function AdminAboutPage() {

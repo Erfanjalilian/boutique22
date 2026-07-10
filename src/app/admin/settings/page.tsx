@@ -1,4 +1,4 @@
-import { getSettings } from "@/lib/repositories";
+import { getSettings } from "@/lib/data";
 import { SettingsAdminClient } from "@/features/admin/SettingsAdminClient";
 
 export default async function AdminSettingsPage() {

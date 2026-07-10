@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSession, setSessionCookie } from "@/lib/auth";
-import { getUserByPhone } from "@/lib/repositories";
+import { getUserByPhone } from "@/lib/data";
 
 export async function GET(request: NextRequest) {
   const origin = request.nextUrl.origin;

@@ -1,4 +1,4 @@
-import { getColors } from "@/lib/repositories";
+import { getColors } from "@/lib/data";
 import { apiSuccess } from "@/utils/api";
 
 export async function GET() {

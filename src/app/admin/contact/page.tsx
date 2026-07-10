@@ -1,4 +1,4 @@
-import { getContact } from "@/lib/repositories";
+import { getContact } from "@/lib/data";
 import { ContactAdminClient } from "@/features/admin/ContactAdminClient";
 
 export default async function AdminContactPage() {

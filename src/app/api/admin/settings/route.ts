@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { getSession } from "@/lib/auth";
-import { getSettings, saveSettings } from "@/lib/repositories";
+import { getSettings, saveSettings } from "@/lib/data";
 import { apiSuccess, apiError } from "@/utils/api";
 
 const settingsSchema = z.object({

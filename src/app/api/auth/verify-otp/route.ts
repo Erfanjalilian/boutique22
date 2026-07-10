@@ -5,7 +5,7 @@ import {
   getUserByPhone,
   getUsers,
   saveUsers,
-} from "@/lib/repositories";
+} from "@/lib/data";
 import { createSession, setSessionCookie } from "@/lib/auth";
 import { generateId } from "@/utils/helpers";
 import { apiSuccess, apiError } from "@/utils/api";

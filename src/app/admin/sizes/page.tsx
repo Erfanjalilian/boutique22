@@ -1,4 +1,4 @@
-import { getSizes } from "@/lib/repositories";
+import { getSizes } from "@/lib/data";
 import { SimpleCrudAdmin } from "@/features/admin/SimpleCrudAdmin";
 
 export default async function AdminSizesPage() {

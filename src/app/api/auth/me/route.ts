@@ -1,5 +1,5 @@
 import { getSession } from "@/lib/auth";
-import { getUserById } from "@/lib/repositories";
+import { getUserById } from "@/lib/data";
 import { apiSuccess, apiError } from "@/utils/api";
 
 export async function GET() {

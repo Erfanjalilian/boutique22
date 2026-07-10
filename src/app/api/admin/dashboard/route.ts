@@ -1,5 +1,5 @@
 import { getSession } from "@/lib/auth";
-import { getDashboardStats } from "@/lib/repositories";
+import { getDashboardStats } from "@/lib/data";
 import { apiSuccess, apiError } from "@/utils/api";
 
 export async function GET() {

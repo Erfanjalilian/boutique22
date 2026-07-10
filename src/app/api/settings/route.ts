@@ -1,4 +1,4 @@
-import { getSettings } from "@/lib/repositories";
+import { getSettings } from "@/lib/data";
 import { apiSuccess } from "@/utils/api";
 
 export async function GET() {

@@ -4,7 +4,7 @@ import {
   getProductById,
   getProducts,
   getCategories,
-} from "@/lib/repositories";
+} from "@/lib/data";
 
 export default async function ProductDetailPage({
   params,

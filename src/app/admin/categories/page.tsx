@@ -1,4 +1,4 @@
-import { getCategories } from "@/lib/repositories";
+import { getCategories } from "@/lib/data";
 import { CategoriesAdminClient } from "@/features/admin/CategoriesAdminClient";
 
 export default async function AdminCategoriesPage() {
