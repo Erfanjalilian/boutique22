@@ -24,12 +24,10 @@ export async function proxy(request: NextRequest) {
   const session = await getSession(request);
 
   if (pathname.startsWith("/admin")) {
-    if (!session) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-    if (session.role !== "admin") {
+    if (session && session.role !== "admin") {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
+    return NextResponse.next();
   }
 
   if (pathname.startsWith("/dashboard")) {
