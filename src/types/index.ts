@@ -138,6 +138,16 @@ export interface SiteSettings {
   footerLinks: { label: string; href: string }[];
 }
 
+export interface SiteBanner {
+  id: string;
+  title: string;
+  subtitle: string;
+  image: string;
+  buttonText: string;
+  buttonHref: string;
+  accent?: string;
+}
+
 export interface SessionPayload {
   userId: string;
   role: UserRole;

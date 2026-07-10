@@ -1,10 +1,5 @@
 import { notFound } from "next/navigation";
-import {
-  getProductById,
-  getCategories,
-  getSizes,
-  getColors,
-} from "@/lib/repositories";
+import { getProductById } from "@/lib/repositories";
 import { ProductForm } from "@/features/admin/ProductForm";
 
 export default async function EditProductPage({
@@ -13,24 +8,14 @@ export default async function EditProductPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [product, categories, sizes, colors] = await Promise.all([
-    getProductById(id),
-    getCategories(),
-    getSizes(),
-    getColors(),
-  ]);
+  const product = await getProductById(id);
 
   if (!product) notFound();
 
   return (
     <div className="animate-fade-in">
       <h1 className="text-2xl font-bold mb-6">ویرایش محصول</h1>
-      <ProductForm
-        product={product}
-        categories={categories}
-        sizes={sizes}
-        colors={colors}
-      />
+      <ProductForm product={product} />
     </div>
   );
 }

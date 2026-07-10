@@ -10,6 +10,7 @@ import type {
   ContactInfo,
   AboutInfo,
   SiteSettings,
+  SiteBanner,
   OrderStatus,
 } from "@/types";
 
@@ -135,6 +136,14 @@ export async function getContact(): Promise<ContactInfo> {
 
 export async function saveContact(contact: ContactInfo): Promise<void> {
   await writeJson("contact.json", contact);
+}
+
+export async function getBanners(): Promise<SiteBanner[]> {
+  return readJson<SiteBanner[]>("banners.json");
+}
+
+export async function saveBanners(banners: SiteBanner[]): Promise<void> {
+  await writeJson("banners.json", banners);
 }
 
 export async function getDashboardStats() {

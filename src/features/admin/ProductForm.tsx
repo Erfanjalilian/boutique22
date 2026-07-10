@@ -4,45 +4,30 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
-import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { ImageUpload } from "@/components/admin/ImageUpload";
-import type { Product, Category, Size, Color } from "@/types";
+import type { Product } from "@/types";
 
 interface ProductFormProps {
   product?: Product;
-  categories: Category[];
-  sizes: Size[];
-  colors: Color[];
 }
 
-export function ProductForm({ product, categories, sizes, colors }: ProductFormProps) {
+export function ProductForm({ product }: ProductFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [imageInput, setImageInput] = useState((product?.images || []).join("\n"));
   const [form, setForm] = useState({
     name: product?.name || "",
     description: product?.description || "",
     price: product?.price?.toString() || "",
-    categoryId: product?.categoryId || categories[0]?.id || "",
+    categoryId: product?.categoryId || "",
     images: product?.images || [],
-    sizes: product?.sizes || [],
-    colors: product?.colors || [],
     featured: product?.featured || false,
     bestSeller: product?.bestSeller || false,
     newArrival: product?.newArrival || false,
     stock: product?.stock?.toString() || "0",
   });
-
-  function toggleArrayItem(field: "sizes" | "colors", id: string) {
-    setForm((f) => ({
-      ...f,
-      [field]: f[field].includes(id)
-        ? f[field].filter((i) => i !== id)
-        : [...f[field], id],
-    }));
-  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -55,8 +40,6 @@ export function ProductForm({ product, categories, sizes, colors }: ProductFormP
       price: Number(form.price),
       categoryId: form.categoryId,
       images: form.images,
-      sizes: form.sizes,
-      colors: form.colors,
       featured: form.featured,
       bestSeller: form.bestSeller,
       newArrival: form.newArrival,
@@ -116,61 +99,33 @@ export function ProductForm({ product, categories, sizes, colors }: ProductFormP
             onChange={(e) => setForm({ ...form, stock: e.target.value })}
           />
         </div>
-        <Select
-          label="دسته‌بندی"
-          value={form.categoryId}
-          onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
-          options={categories.map((c) => ({ value: c.id, label: c.name }))}
-        />
       </Card>
 
-      <Card className="p-6">
-        <h3 className="font-medium mb-4">تصاویر</h3>
-        <ImageUpload
-          images={form.images}
-          onChange={(images) => setForm({ ...form, images })}
+      <Card className="p-6 space-y-4">
+        <h3 className="font-medium">تصاویر</h3>
+        <p className="text-sm text-muted">
+          برای هر تصویر، یک لینک تصویر وارد کنید. لینک‌ها در API ذخیره می‌شود.
+        </p>
+        <Textarea
+          label="لینک‌های تصویر"
+          rows={5}
+          placeholder="هر لینک در یک خط"
+          value={imageInput}
+          onChange={(e) => {
+            const value = e.target.value;
+            setImageInput(value);
+            setForm({
+              ...form,
+              images: value
+                .split(/\n+/)
+                .map((item) => item.trim())
+                .filter(Boolean),
+            });
+          }}
         />
       </Card>
 
       <Card className="p-6 space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-muted mb-2">سایزها</label>
-          <div className="flex flex-wrap gap-2">
-            {sizes.map((size) => (
-              <button
-                key={size.id}
-                type="button"
-                onClick={() => toggleArrayItem("sizes", size.id)}
-                className={`px-3 py-1.5 rounded-lg border text-sm ${
-                  form.sizes.includes(size.id)
-                    ? "border-primary bg-primary/20 text-primary"
-                    : "border-border"
-                }`}
-              >
-                {size.name}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-muted mb-2">رنگ‌ها</label>
-          <div className="flex flex-wrap gap-2">
-            {colors.map((color) => (
-              <button
-                key={color.id}
-                type="button"
-                onClick={() => toggleArrayItem("colors", color.id)}
-                className={`px-3 py-1.5 rounded-lg border text-sm ${
-                  form.colors.includes(color.id)
-                    ? "border-primary bg-primary/20"
-                    : "border-border"
-                }`}
-              >
-                {color.name}
-              </button>
-            ))}
-          </div>
-        </div>
         <div className="flex flex-wrap gap-4">
           {([
             { key: "featured" as const, label: "ویژه" },

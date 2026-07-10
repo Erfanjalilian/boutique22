@@ -4,7 +4,9 @@
     "name": "محصول ۱",
     "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است",
     "price": 890000,
-    "images": ["/Image/برق۱.jpg"],
+    "images": [
+      "/Image/برق۱.jpg"
+    ],
     "categoryId": "cat-001",
     "brand": "NOVA",
     "featured": true,
@@ -18,7 +20,9 @@
     "name": "محصول ۲",
     "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است",
     "price": 2490000,
-    "images": ["/Image/برق۲.jpg"],
+    "images": [
+      "/Image/برق۲.jpg"
+    ],
     "categoryId": "cat-002",
     "brand": "AURA",
     "featured": true,
@@ -32,7 +36,9 @@
     "name": "محصول ۳",
     "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است",
     "price": 3890000,
-    "images": ["/Image/برق۳.jpg"],
+    "images": [
+      "/Image/برق۳.jpg"
+    ],
     "categoryId": "cat-003",
     "brand": "LUMEN",
     "featured": true,
@@ -46,7 +52,9 @@
     "name": "محصول ۴",
     "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است",
     "price": 8900000,
-    "images": ["/Image/برق۴.jpg"],
+    "images": [
+      "/Image/برق۴.jpg"
+    ],
     "categoryId": "cat-004",
     "brand": "ORBIT",
     "featured": true,
@@ -60,7 +68,9 @@
     "name": "محصول ۵",
     "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است",
     "price": 1590000,
-    "images": ["/Image/برق۵.jpg"],
+    "images": [
+      "/Image/برق۵.jpg"
+    ],
     "categoryId": "cat-005",
     "brand": "NOVA",
     "featured": false,
@@ -74,7 +84,9 @@
     "name": "محصول ۶",
     "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است",
     "price": 2790000,
-    "images": ["/Image/برق۶.jpg"],
+    "images": [
+      "/Image/برق۶.jpg"
+    ],
     "categoryId": "cat-001",
     "brand": "AURA",
     "featured": false,
@@ -88,7 +100,9 @@
     "name": "محصول ۷",
     "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است",
     "price": 3190000,
-    "images": ["/Image/برق۷.jpg"],
+    "images": [
+      "/Image/برق۷.jpg"
+    ],
     "categoryId": "cat-002",
     "brand": "LUMEN",
     "featured": false,
@@ -102,7 +116,9 @@
     "name": "محصول ۸",
     "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است",
     "price": 9900000,
-    "images": ["/Image/برق۸.jpg"],
+    "images": [
+      "/Image/برق۸.jpg"
+    ],
     "categoryId": "cat-004",
     "brand": "ORBIT",
     "featured": true,
