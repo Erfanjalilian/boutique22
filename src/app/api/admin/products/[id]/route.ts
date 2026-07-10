@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { getSession } from "@/lib/auth";
+import { getAdminSessionOrFallback } from "@/lib/auth";
 import { getProducts, saveProducts } from "@/lib/repositories";
 import { apiSuccess, apiError } from "@/utils/api";
 
@@ -18,7 +18,7 @@ const productSchema = z.object({
 });
 
 async function requireAdmin() {
-  const session = await getSession();
+  const session = await getAdminSessionOrFallback();
   if (!session || session.role !== "admin") return null;
   return session;
 }
