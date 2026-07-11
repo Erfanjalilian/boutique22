@@ -18,7 +18,7 @@ function OrderSuccessContent() {
 
   useEffect(() => {
     if (!orderId) return;
-    fetch(`/api/orders/${orderId}`)
+    fetch(`/api/orders/${orderId}`, { cache: "no-store" })
       .then((r) => r.json())
       .then((data) => {
         if (data.success) setOrder(data.data);

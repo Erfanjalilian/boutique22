@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { getProductById } from "@/lib/data";
 import { ProductForm } from "@/features/admin/ProductForm";
 
+export const dynamic = "force-dynamic";
+
 export default async function EditProductPage({
   params,
 }: {

@@ -29,7 +29,7 @@ export default function CheckoutPage() {
   }, [items, router]);
 
   useEffect(() => {
-    fetch("/api/auth/me")
+    fetch("/api/auth/me", { cache: "no-store" })
       .then((r) => r.json())
       .then((data) => {
         if (data.success) {
