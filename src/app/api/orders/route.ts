@@ -14,6 +14,7 @@ import {
   requestZibalPayment,
   ZibalRequestPayload,
 } from "@/services/zibal";
+import { info, warn, error as logError } from "@/utils/logger";
 
 const orderItemSchema = z.object({
   productId: z.string(),
@@ -109,6 +110,7 @@ export async function POST(request: Request) {
     };
 
     const paymentResult = await requestZibalPayment(paymentPayload);
+    logError("Zibal request failed", paymentResult);
     if (paymentResult.result !== 100 || !paymentResult.trackId) {
       return apiError(
         paymentResult.message || "Payment gateway request failed",
@@ -117,6 +119,7 @@ export async function POST(request: Request) {
     }
 
     order.paymentTrackId = paymentResult.trackId;
+    info("Order created with payment trackId", { orderId, trackId: paymentResult.trackId, amount: total });
 
     const orders = await getOrders();
     orders.push(order);

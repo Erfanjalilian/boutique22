@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { verifyZibalPayment } from "@/services/zibal";
 import { getOrders, saveOrders, getSettings } from "@/lib/data";
 import { apiSuccess, apiError } from "@/utils/api";
+import { info, warn, error as logError } from "@/utils/logger";
 
 export async function GET(request: Request) {
   try {
@@ -10,6 +11,7 @@ export async function GET(request: Request) {
     const trackId = url.searchParams.get("trackId")?.trim();
 
     if (!trackId) {
+      logError("Callback missing trackId", { url: request.url });
       return apiError("Invalid callback payload", 400);
     }
 
@@ -19,6 +21,7 @@ export async function GET(request: Request) {
       : orders.findIndex((order) => order.paymentTrackId === trackId);
 
     if (orderIndex === -1) {
+      logError("Callback order not found", { orderId, trackId });
       return apiError("Order not found", 404);
     }
 
@@ -38,7 +41,9 @@ export async function GET(request: Request) {
     }
 
     const zibalResponse = await verifyZibalPayment(merchant, trackId);
+    info("Zibal verify response", { orderId: order.id, trackId, zibalResponse });
     if (zibalResponse.result !== 100) {
+      logError("Payment verification failed from Zibal", zibalResponse);
       orders[orderIndex] = {
         ...order,
         status: "Failed",
@@ -52,10 +57,12 @@ export async function GET(request: Request) {
     }
 
     if (zibalResponse.trackId && zibalResponse.trackId !== trackId) {
+      logError("Mismatched trackId in Zibal response", { expected: trackId, received: zibalResponse.trackId });
       return apiError("Mismatched payment trackId", 400);
     }
 
     if (typeof zibalResponse.amount === "number" && zibalResponse.amount !== order.total) {
+      logError("Payment amount mismatch", { orderId: order.id, expected: order.total, got: zibalResponse.amount });
       orders[orderIndex] = {
         ...order,
         status: "Failed",
@@ -73,6 +80,7 @@ export async function GET(request: Request) {
       paymentReferenceNumber: zibalResponse.referenceNumber || undefined,
       paymentVerifiedAt: new Date().toISOString(),
     };
+    info("Order marked as Paid", { orderId: order.id, trackId, reference: zibalResponse.referenceNumber });
     await saveOrders(orders);
 
     const successUrl = new URL(`/order-success?id=${order.id}`, url.origin);
