@@ -8,6 +8,11 @@ import {
 } from "@/lib/data";
 import { generateId } from "@/utils/helpers";
 import { apiSuccess, apiError } from "@/utils/api";
+import {
+  getZibalGatewayUrl,
+  requestZibalPayment,
+  ZibalRequestPayload,
+} from "@/services/zibal";
 
 const orderItemSchema = z.object({
   productId: z.string(),
@@ -61,9 +66,19 @@ export async function POST(request: Request) {
       0
     );
 
-    const orders = await getOrders();
+    const merchant = process.env.ZIBAL_MERCHANT?.trim();
+    if (!merchant) {
+      return apiError("Payment gateway configuration missing", 500);
+    }
+
+    const orderId = generateId();
+    const origin = new URL(request.url).origin;
+    const callbackUrl = `${origin}/api/payments/callback?orderId=${encodeURIComponent(
+      orderId
+    )}`;
+
     const order = {
-      id: generateId(),
+      id: orderId,
       userId: session.userId,
       items,
       total,
@@ -73,9 +88,31 @@ export async function POST(request: Request) {
       address,
       postalCode,
       notes: notes || "",
+      paymentTrackId: undefined as string | undefined,
+      paymentReferenceNumber: undefined as string | undefined,
+      paymentVerifiedAt: undefined as string | undefined,
       createdAt: new Date().toISOString(),
     };
 
+    const paymentPayload: ZibalRequestPayload = {
+      merchant,
+      amount: total,
+      callbackUrl,
+      description: `پرداخت سفارش #${order.id}`,
+      mobile: phone,
+    };
+
+    const paymentResult = await requestZibalPayment(paymentPayload);
+    if (paymentResult.result !== 100 || !paymentResult.trackId) {
+      return apiError(
+        paymentResult.message || "Payment gateway request failed",
+        502
+      );
+    }
+
+    order.paymentTrackId = paymentResult.trackId;
+
+    const orders = await getOrders();
     orders.push(order);
     await saveOrders(orders);
 
@@ -90,8 +127,14 @@ export async function POST(request: Request) {
       }
     }
 
-    return apiSuccess(order, 201);
-  } catch {
+    return apiSuccess(
+      {
+        orderId: order.id,
+        redirectUrl: getZibalGatewayUrl(paymentResult.trackId),
+      },
+      201
+    );
+  } catch (error) {
     return apiError("Internal server error", 500);
   }
 }

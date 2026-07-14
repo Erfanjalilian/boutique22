@@ -39,15 +39,21 @@ function OrderSuccessContent() {
     );
   }
 
+  const isFailed = order.status === "Failed";
+  const badgeColor = isFailed ? "bg-red-500/20" : "bg-green-500/20";
+  const icon = isFailed ? "✕" : "✓";
+  const title = isFailed ? "پرداخت ناموفق بود" : "سفارش با موفقیت ثبت شد!";
+  const subtitle = isFailed
+    ? "پرداخت شما تأیید نشد. لطفاً دوباره تلاش کنید یا با پشتیبانی تماس بگیرید."
+    : "از خرید شما سپاسگزاریم. سفارش شما در حال پردازش است.";
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-12 text-center animate-fade-in">
-      <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-        <span className="text-3xl">✓</span>
+      <div className={`${badgeColor} rounded-full flex items-center justify-center mx-auto mb-6 w-16 h-16`}>
+        <span className="text-3xl">{icon}</span>
       </div>
-      <h1 className="text-3xl font-bold mb-2">سفارش با موفقیت ثبت شد!</h1>
-      <p className="text-muted mb-8">
-        از خرید شما سپاسگزاریم. سفارش شما در حال پردازش است.
-      </p>
+      <h1 className="text-3xl font-bold mb-2">{title}</h1>
+      <p className="text-muted mb-8">{subtitle}</p>
 
       <Card className="p-6 text-start mb-8">
         <div className="flex justify-between items-start mb-4">
@@ -80,7 +86,7 @@ function OrderSuccessContent() {
           <Button variant="secondary">مشاهده سفارش‌ها</Button>
         </Link>
         <Link href="/products">
-          <Button>ادامه خرید</Button>
+          <Button>{isFailed ? "بازگشت به خرید" : "ادامه خرید"}</Button>
         </Link>
       </div>
     </div>

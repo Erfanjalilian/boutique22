@@ -25,11 +25,14 @@ export default function LoginPageClient() {
   const { login, isAuthenticated, loading: authLoading } = useAuth();
 
   const adminMode = searchParams.get("mode") === "admin";
-  const [step, setStep] = useState<"phone" | "otp" | "admin">(
-    adminMode ? "admin" : "phone"
+  const [view, setView] = useState<"otp" | "login" | "register" | "admin">(
+    adminMode ? "admin" : "otp"
   );
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+  const [postalCode, setPostalCode] = useState("");
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
@@ -110,7 +113,7 @@ export default function LoginPageClient() {
     }
     const ok = await sendOtp(phone);
     if (ok) {
-      setStep("otp");
+      setView("otp");
       setCode("");
     }
   }
@@ -140,6 +143,57 @@ export default function LoginPageClient() {
       router.refresh();
     } else {
       setError(data.error || "ورود ناموفق بود");
+    }
+  }
+
+  async function handleUsernamePasswordLogin(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await res.json();
+    setLoading(false);
+
+    if (data.success) {
+      login(data.data.user as AuthUser);
+      router.push(data.data.redirectTo);
+      router.refresh();
+    } else {
+      setError(data.error || "نام کاربری یا کلمه عبور اشتباه است");
+    }
+  }
+
+  async function handleRegister(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username,
+        password,
+        name,
+        phone,
+        address,
+        postalCode,
+      }),
+    });
+    const data = await res.json();
+    setLoading(false);
+
+    if (data.success) {
+      login(data.data.user as AuthUser);
+      router.push(data.data.redirectTo);
+      router.refresh();
+    } else {
+      setError(data.error || "ثبت نام ناموفق بود");
     }
   }
 
@@ -186,11 +240,62 @@ export default function LoginPageClient() {
           <p className="text-muted text-sm mt-2">
             {adminMode
               ? "برای ورود به پنل مدیریت، اطلاعات حساب را وارد کنید"
-              : step === "phone"
-                ? "برای ورود، شماره موبایل خود را وارد کنید"
-                : `کد ارسال‌شده به ${phone} را وارد کنید`}
+              : view === "otp"
+              ? "برای ورود، شماره موبایل خود را وارد کنید"
+              : view === "login"
+              ? "نام کاربری و کلمه عبور خود را وارد کنید"
+              : view === "register"
+              ? "یک حساب کاربری جدید بسازید"
+              : "برای ورود به پنل مدیریت، اطلاعات حساب را وارد کنید"}
           </p>
         </div>
+
+        {!adminMode && (
+          <div className="mb-6 flex flex-wrap items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setView("otp");
+                setError("");
+              }}
+              className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                view === "otp"
+                  ? "bg-primary text-white border-primary"
+                  : "bg-card text-muted border-border"
+              }`}
+            >
+              ورود با کد
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setView("login");
+                setError("");
+              }}
+              className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                view === "login"
+                  ? "bg-primary text-white border-primary"
+                  : "bg-card text-muted border-border"
+              }`}
+            >
+              ورود با نام کاربری
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setView("register");
+                setError("");
+              }}
+              className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                view === "register"
+                  ? "bg-primary text-white border-primary"
+                  : "bg-card text-muted border-border"
+              }`}
+            >
+              ثبت نام
+            </button>
+          </div>
+        )}
 
         {adminMode ? (
           <form onSubmit={handleAdminLogin} className="space-y-5" noValidate>
@@ -227,7 +332,7 @@ export default function LoginPageClient() {
               ورود به پنل مدیریت
             </Button>
           </form>
-        ) : step === "phone" ? (
+        ) : view === "otp" ? (
           <form onSubmit={handleSendOtp} className="space-y-5" noValidate>
             <Input
               label="شماره موبایل"
@@ -252,6 +357,119 @@ export default function LoginPageClient() {
 
             <Button type="submit" className="w-full" size="lg" loading={loading}>
               ارسال کد تأیید
+            </Button>
+          </form>
+        ) : view === "login" ? (
+          <form onSubmit={handleUsernamePasswordLogin} className="space-y-5" noValidate>
+            <Input
+              label="نام کاربری"
+              placeholder="joojino"
+              value={username}
+              onChange={(e) => {
+                setUsername(e.target.value);
+                setError("");
+              }}
+              autoFocus
+              required
+            />
+            <Input
+              label="کلمه عبور"
+              placeholder="••••••••"
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setError("");
+              }}
+              required
+            />
+
+            {error && (
+              <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-500">
+                {error}
+              </div>
+            )}
+
+            <Button type="submit" className="w-full" size="lg" loading={loading}>
+              ورود به حساب
+            </Button>
+          </form>
+        ) : view === "register" ? (
+          <form onSubmit={handleRegister} className="space-y-5" noValidate>
+            <Input
+              label="نام و نام خانوادگی"
+              placeholder="محمد رضایی"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                setError("");
+              }}
+              autoFocus
+              required
+            />
+            <Input
+              label="نام کاربری"
+              placeholder="joojino"
+              value={username}
+              onChange={(e) => {
+                setUsername(e.target.value);
+                setError("");
+              }}
+              required
+            />
+            <Input
+              label="کلمه عبور"
+              placeholder="••••••"
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setError("");
+              }}
+              required
+            />
+            <Input
+              label="شماره موبایل"
+              placeholder="09123456789"
+              value={phone}
+              onChange={(e) => {
+                setPhone(e.target.value.replace(/\D/g, ""));
+                setError("");
+              }}
+              type="tel"
+              inputMode="numeric"
+              maxLength={11}
+              required
+            />
+            <Input
+              label="آدرس"
+              placeholder="تهران، خیابان مثال"
+              value={address}
+              onChange={(e) => {
+                setAddress(e.target.value);
+                setError("");
+              }}
+              required
+            />
+            <Input
+              label="کد پستی"
+              placeholder="1234567890"
+              value={postalCode}
+              onChange={(e) => {
+                setPostalCode(e.target.value.replace(/\D/g, ""));
+                setError("");
+              }}
+              required
+            />
+
+            {error && (
+              <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-500">
+                {error}
+              </div>
+            )}
+
+            <Button type="submit" className="w-full" size="lg" loading={loading}>
+              ثبت نام و ورود
             </Button>
           </form>
         ) : (

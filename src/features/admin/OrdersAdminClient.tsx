@@ -11,9 +11,11 @@ import type { Order, OrderStatus } from "@/types";
 const statuses: OrderStatus[] = [
   "Pending",
   "Processing",
+  "Paid",
   "Shipped",
   "Delivered",
   "Cancelled",
+  "Failed",
 ];
 
 export function OrdersAdminClient({

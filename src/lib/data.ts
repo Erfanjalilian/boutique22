@@ -63,6 +63,11 @@ export async function getUserByPhone(phone: string): Promise<User | undefined> {
   return users.find((u) => u.phone === phone);
 }
 
+export async function getUserByUsername(username: string): Promise<User | undefined> {
+  const users = await getUsers();
+  return users.find((u) => u.username === username);
+}
+
 export async function getProducts(): Promise<Product[]> {
   return readJson<Product[]>("products.json", []);
 }

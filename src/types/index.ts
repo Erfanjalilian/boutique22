@@ -5,7 +5,9 @@ export type OrderStatus =
   | "Processing"
   | "Shipped"
   | "Delivered"
-  | "Cancelled";
+  | "Cancelled"
+  | "Paid"
+  | "Failed";
 
 export interface Address {
   id: string;
@@ -20,6 +22,8 @@ export interface Address {
 
 export interface User {
   id: string;
+  username?: string;
+  password?: string;
   phone: string;
   name: string;
   address: string;
@@ -99,6 +103,9 @@ export interface Order {
   address: string;
   postalCode: string;
   notes: string;
+  paymentTrackId?: string;
+  paymentReferenceNumber?: string;
+  paymentVerifiedAt?: string;
   createdAt: string;
 }
 
