@@ -71,7 +71,10 @@ export async function POST(request: Request) {
     const merchant =
       process.env.ZIBAL_MERCHANT?.trim() || settings.zibalMerchant?.trim();
     if (!merchant) {
-      return apiError("Payment gateway configuration missing", 500);
+      return apiError(
+        "تنظیمات پرداخت زیبال یافت نشد. لطفاً شناسه پذیرنده را در تنظیمات سایت وارد کنید.",
+        400
+      );
     }
 
     const orderId = generateId();
