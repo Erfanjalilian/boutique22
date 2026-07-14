@@ -13,6 +13,7 @@ const settingsSchema = z.object({
   footerLinks: z
     .array(z.object({ label: z.string(), href: z.string() }))
     .optional(),
+  zibalMerchant: z.string().optional(),
 });
 
 export async function GET() {

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { verifyZibalPayment } from "@/services/zibal";
-import { getOrders, saveOrders } from "@/lib/data";
+import { getOrders, saveOrders, getSettings } from "@/lib/data";
 import { apiSuccess, apiError } from "@/utils/api";
 
 export async function GET(request: Request) {
@@ -27,7 +27,9 @@ export async function GET(request: Request) {
       return NextResponse.redirect(new URL(`/order-success?id=${order.id}`, url.origin));
     }
 
-    const merchant = process.env.ZIBAL_MERCHANT?.trim();
+    const settings = await getSettings();
+    const merchant =
+      process.env.ZIBAL_MERCHANT?.trim() || settings.zibalMerchant?.trim();
     if (!merchant) {
       return apiError("Payment gateway configuration missing", 500);
     }

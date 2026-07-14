@@ -10,5 +10,6 @@
     { "label": "تماس با ما", "href": "/contact" },
     { "label": "حریم خصوصی", "href": "/privacy" },
     { "label": "قوانین و مقررات", "href": "/terms" }
-  ]
+  ],
+  "zibalMerchant": ""
 }

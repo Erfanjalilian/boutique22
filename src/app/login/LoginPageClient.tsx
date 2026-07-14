@@ -25,7 +25,7 @@ export default function LoginPageClient() {
   const { login, isAuthenticated, loading: authLoading } = useAuth();
 
   const adminMode = searchParams.get("mode") === "admin";
-  const [view, setView] = useState<"otp" | "login" | "register" | "admin">(
+  const [view, setView] = useState<"otp" | "verify" | "login" | "register" | "admin">(
     adminMode ? "admin" : "otp"
   );
   const [username, setUsername] = useState("");
@@ -113,7 +113,7 @@ export default function LoginPageClient() {
     }
     const ok = await sendOtp(phone);
     if (ok) {
-      setView("otp");
+      setView("verify");
       setCode("");
     }
   }
@@ -242,6 +242,8 @@ export default function LoginPageClient() {
               ? "برای ورود به پنل مدیریت، اطلاعات حساب را وارد کنید"
               : view === "otp"
               ? "برای ورود، شماره موبایل خود را وارد کنید"
+              : view === "verify"
+              ? `کد ۶ رقمی ارسال‌شده برای ${phone} را وارد کنید`
               : view === "login"
               ? "نام کاربری و کلمه عبور خود را وارد کنید"
               : view === "register"
@@ -359,6 +361,59 @@ export default function LoginPageClient() {
               ارسال کد تأیید
             </Button>
           </form>
+        ) : view === "verify" ? (
+          <form onSubmit={handleVerifyOtp} className="space-y-5" noValidate>
+            <div className="flex justify-between items-center gap-3">
+              <div className="text-sm text-muted">کد به {phone || "شماره شما"} ارسال شد.</div>
+              <button
+                type="button"
+                onClick={() => {
+                  setView("otp");
+                  setError("");
+                }}
+                className="text-sm font-medium text-primary hover:underline"
+              >
+                تغییر شماره
+              </button>
+            </div>
+
+            <Input
+              label="کد تأیید (۶ رقم)"
+              placeholder="123456"
+              value={code}
+              onChange={(e) => {
+                setCode(e.target.value.replace(/\D/g, "").slice(0, 6));
+                setError("");
+              }}
+              inputMode="numeric"
+              maxLength={6}
+              autoFocus
+              required
+            />
+
+            {error && (
+              <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-500">
+                {error}
+              </div>
+            )}
+
+            <Button type="submit" className="w-full" size="lg" loading={loading}>
+              ورود با کد
+            </Button>
+
+            <div className="text-center text-sm text-muted">
+              <button
+                type="button"
+                onClick={handleResendOtp}
+                disabled={resendCountdown > 0 || loading}
+                className="font-medium text-primary hover:underline disabled:opacity-50"
+              >
+                {resendCountdown > 0
+                  ? `ارسال مجدد (${formatTime(resendCountdown)})`
+                  : "ارسال مجدد کد"}
+              </button>
+            </div>
+          </form>
         ) : view === "login" ? (
           <form onSubmit={handleUsernamePasswordLogin} className="space-y-5" noValidate>
             <Input
@@ -394,151 +449,7 @@ export default function LoginPageClient() {
               ورود به حساب
             </Button>
           </form>
-        ) : view === "register" ? (
-          <form onSubmit={handleRegister} className="space-y-5" noValidate>
-            <Input
-              label="نام و نام خانوادگی"
-              placeholder="محمد رضایی"
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-                setError("");
-              }}
-              autoFocus
-              required
-            />
-            <Input
-              label="نام کاربری"
-              placeholder="joojino"
-              value={username}
-              onChange={(e) => {
-                setUsername(e.target.value);
-                setError("");
-              }}
-              required
-            />
-            <Input
-              label="کلمه عبور"
-              placeholder="••••••"
-              type="password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setError("");
-              }}
-              required
-            />
-            <Input
-              label="شماره موبایل"
-              placeholder="09123456789"
-              value={phone}
-              onChange={(e) => {
-                setPhone(e.target.value.replace(/\D/g, ""));
-                setError("");
-              }}
-              type="tel"
-              inputMode="numeric"
-              maxLength={11}
-              required
-            />
-            <Input
-              label="آدرس"
-              placeholder="تهران، خیابان مثال"
-              value={address}
-              onChange={(e) => {
-                setAddress(e.target.value);
-                setError("");
-              }}
-              required
-            />
-            <Input
-              label="کد پستی"
-              placeholder="1234567890"
-              value={postalCode}
-              onChange={(e) => {
-                setPostalCode(e.target.value.replace(/\D/g, ""));
-                setError("");
-              }}
-              required
-            />
-
-            {error && (
-              <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-500">
-                {error}
-              </div>
-            )}
-
-            <Button type="submit" className="w-full" size="lg" loading={loading}>
-              ثبت نام و ورود
-            </Button>
-          </form>
-        ) : (
-          <form onSubmit={handleVerifyOtp} className="space-y-5" noValidate>
-            <div className="flex justify-center">
-              <div
-                className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-medium border ${
-                  otpCountdown > 0
-                    ? "bg-secondary/10 text-secondary-hover border-secondary/30"
-                    : "bg-red-500/10 text-red-500 border-red-500/30"
-                }`}
-              >
-                <svg
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                {otpCountdown > 0
-                  ? `انقضای کد: ${formatTime(otpCountdown)}`
-                  : "کد تأیید منقضی شد"}
-              </div>
-            </div>
-
-            <Input
-              label="کد تأیید (۶ رقم)"
-              placeholder="123456"
-              value={code}
-              onChange={(e) => {
-                setCode(e.target.value.replace(/\D/g, "").slice(0, 6));
-                setError("");
-              }}
-              inputMode="numeric"
-              maxLength={6}
-              autoFocus
-              required
-            />
-
-            {error && (
-              <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-500">
-                {error}
-              </div>
-            )}
-
-            <Button type="submit" className="w-full" size="lg" loading={loading}>
-              تأیید ورود
-            </Button>
-
-            <div className="text-center text-sm text-muted">
-              <button
-                type="button"
-                onClick={handleResendOtp}
-                disabled={resendCountdown > 0 || loading}
-                className="font-medium text-primary hover:underline disabled:opacity-50"
-              >
-                {resendCountdown > 0
-                  ? `ارسال مجدد (${formatTime(resendCountdown)})`
-                  : "ارسال مجدد کد"}
-              </button>
-            </div>
-          </form>
-        )}
+        ) : null}
       </Card>
     </div>
   );

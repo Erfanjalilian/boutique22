@@ -5,6 +5,7 @@ import {
   saveOrders,
   getOrdersByUserId,
   getUserById,
+  getSettings,
 } from "@/lib/data";
 import { generateId } from "@/utils/helpers";
 import { apiSuccess, apiError } from "@/utils/api";
@@ -66,7 +67,9 @@ export async function POST(request: Request) {
       0
     );
 
-    const merchant = process.env.ZIBAL_MERCHANT?.trim();
+    const settings = await getSettings();
+    const merchant =
+      process.env.ZIBAL_MERCHANT?.trim() || settings.zibalMerchant?.trim();
     if (!merchant) {
       return apiError("Payment gateway configuration missing", 500);
     }

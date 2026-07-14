@@ -84,6 +84,16 @@ export function SettingsAdminClient({
           </div>
         </Card>
 
+        <Card className="p-6 space-y-4">
+          <h2 className="font-semibold">تنظیمات پرداخت</h2>
+          <Input
+            label="شناسه پذیرنده زیبال"
+            placeholder="ZIBAL merchant key"
+            value={form.zibalMerchant || ""}
+            onChange={(e) => setForm({ ...form, zibalMerchant: e.target.value })}
+          />
+        </Card>
+
         {message && <p className="text-sm text-green-400">{message}</p>}
         <Button type="submit" loading={loading}>ذخیره تنظیمات</Button>
       </form>
