@@ -71,7 +71,7 @@ export function ProductDetailClient({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Image Gallery */}
         <div>
-          <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-card border border-border/50">
+          <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-slate-50 border border-border/50">
             <button
               type="button"
               onClick={handleWishlistToggle}
@@ -97,7 +97,7 @@ export function ProductDetailClient({
               src={product.images[selectedImage] || "/Image/placeholder-product.svg"}
               alt={product.name}
               fill
-              className="object-cover"
+              className="object-contain"
               priority
             />
           </div>
@@ -107,11 +107,11 @@ export function ProductDetailClient({
                 <button
                   key={i}
                   onClick={() => setSelectedImage(i)}
-                  className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-colors ${
+                  className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 bg-slate-50 transition-colors ${
                     selectedImage === i ? "border-primary" : "border-border"
                   }`}
                 >
-                  <Image src={img} alt="" fill className="object-cover" />
+                  <Image src={img} alt="" fill className="object-contain" />
                 </button>
               ))}
             </div>
