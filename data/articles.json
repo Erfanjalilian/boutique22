@@ -1,0 +1,72 @@
+[
+  {
+    "id": "article-1",
+    "title": "راهنمای انتخاب رنگ مناسب لباس برای پاییز",
+    "image": "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=900&q=80",
+    "description": "در این مقاله نکات ساده و کاربردی برای ترکیب رنگ‌ها در استایل پاییزه را خواهید خواند تا همیشه شیک و هماهنگ به نظر برسید.",
+    "createdAt": "2026-07-15T08:00:00.000Z"
+  },
+  {
+    "id": "article-2",
+    "title": "مهم‌ترین ترند‌های مد زنانه سال ۲۰۲۶",
+    "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=80",
+    "description": "بررسی جدیدترین ترندهای دنیای مد زنانه و نحوه تطبیق آن‌ها با استایل روزمره و مناسبتی.",
+    "createdAt": "2026-07-14T10:30:00.000Z"
+  },
+  {
+    "id": "article-3",
+    "title": "۵ نکته برای خرید پیراهن به‌صرفه و باکیفیت",
+    "image": "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=900&q=80",
+    "description": "اگر دنبال خرید پیراهن خوب و با دوام هستید، این راهنما به شما کمک می‌کند تصمیم‌های هوشمندانه‌تری بگیرید.",
+    "createdAt": "2026-07-13T12:15:00.000Z"
+  },
+  {
+    "id": "article-4",
+    "title": "چگونه استایل رسمی را با راحتی ترکیب کنیم",
+    "image": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
+    "description": "تکنیک‌هایی برای پوشیدن لباس‌های رسمی بدون قربانی کردن راحتی و حس خوب در طول روز.",
+    "createdAt": "2026-07-12T09:00:00.000Z"
+  },
+  {
+    "id": "article-5",
+    "title": "استفاده از اکسسوری‌های ساده برای تغییر کامل استایل",
+    "image": "https://images.unsplash.com/photo-1495121605193-b116b5b09a12?auto=format&fit=crop&w=900&q=80",
+    "description": "نحوه انتخاب کمربند، کفش و زیورآلات که استایل شما را از روزمره به جذاب تبدیل می‌کند.",
+    "createdAt": "2026-07-11T14:20:00.000Z"
+  },
+  {
+    "id": "article-6",
+    "title": "چطور با شلوار جین استایل‌های متنوع بسازیم",
+    "image": "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=900&q=80",
+    "description": "آموزش چند ایده پوشش با شلوار جین که می‌توانید در هر فصل استفاده کنید.",
+    "createdAt": "2026-07-10T11:45:00.000Z"
+  },
+  {
+    "id": "article-7",
+    "title": "۵ روش برای مراقبت بهتر از لباس‌های کتانی",
+    "image": "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=900&q=80",
+    "description": "با راهکارهای ساده طول عمر کتانی‌های شما افزایش می‌یابد و رنگ و شکل آن‌ها بهتر حفظ می‌شود.",
+    "createdAt": "2026-07-09T16:00:00.000Z"
+  },
+  {
+    "id": "article-8",
+    "title": "۱۰ ایده استایل برای قرارهای دوستانه",
+    "image": "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80",
+    "description": "پیشنهادهایی برای انتخاب پوشش مناسب قرار ملاقات دوستانه یا بیرون رفتن با جمع دوستان.",
+    "createdAt": "2026-07-08T19:10:00.000Z"
+  },
+  {
+    "id": "article-9",
+    "title": "لباس‌هایی که برای محیط کاری حرفه‌ای مناسب هستند",
+    "image": "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=900&q=80",
+    "description": "نکات انتخاب لباس‌های کاری که هم حرفه‌ای و هم راحت باشند تا در محیط کار اعتماد به نفس داشته باشید.",
+    "createdAt": "2026-07-07T08:40:00.000Z"
+  },
+  {
+    "id": "article-10",
+    "title": "تفاوت پارچه‌های مختلف و انتخاب بهترین گزینه",
+    "image": "https://images.unsplash.com/photo-1520975861038-79f1a00f38c6?auto=format&fit=crop&w=900&q=80",
+    "description": "آشنایی با انواع پارچه و اینکه هر کدام برای چه فصل و سبک پوششی مناسب‌تر هستند.",
+    "createdAt": "2026-07-06T13:55:00.000Z"
+  }
+]

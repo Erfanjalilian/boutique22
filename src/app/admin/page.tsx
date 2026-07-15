@@ -6,6 +6,7 @@ import { formatPrice, formatDate } from "@/utils/helpers";
 
 const sections = [
   { href: "/admin/products", label: "مدیریت محصولات", description: "مشاهده، افزودن، ویرایش و حذف محصولات", icon: "👕" },
+  { href: "/admin/articles", label: "مدیریت مقالات", description: "افزودن یا حذف مقالات وبلاگ", icon: "📰" },
   { href: "/admin/orders", label: "مدیریت سفارش‌ها", description: "مشاهده وضعیت سفارش‌ها", icon: "📦" },
   { href: "/admin/users", label: "مدیریت کاربران", description: "مشاهده لیست کاربران ثبت‌نامی", icon: "👥" },
   { href: "/admin/banners", label: "مدیریت بنرها", description: "ویرایش بنرهای صفحه اصلی", icon: "🖼️" },

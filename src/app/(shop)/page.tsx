@@ -1,19 +1,25 @@
 import { HeroSection } from "@/components/shop/HeroSection";
 import { ProductGrid } from "@/components/shop/ProductGrid";
+import { ArticleGrid } from "@/components/shop/ArticleGrid";
 import { CategoryGrid } from "@/components/shop/CategoryGrid";
 import { PromoBanner } from "@/components/shop/PromoBanner";
-import { getProducts, getCategories, getBanners } from "@/lib/data";
+import { getArticles, getProducts, getCategories, getBanners } from "@/lib/data";
 
 export default async function HomePage() {
-  const [products, categories, banners] = await Promise.all([
+  const [products, categories, banners, articles] = await Promise.all([
     getProducts(),
     getCategories(),
     getBanners(),
+    getArticles(),
   ]);
 
   const featured = products.filter((p) => p.featured).slice(0, 4);
   const newArrivals = products.filter((p) => p.newArrival).slice(0, 4);
   const bestSellers = products.filter((p) => p.bestSeller).slice(0, 4);
+  const latestArticles = articles
+    .slice()
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 4);
 
   return (
     <>
@@ -23,6 +29,12 @@ export default async function HomePage() {
         products={featured}
         title="محصولات ویژه"
         subtitle="گلچینی از بهترین‌های کالکشن جدید"
+      />
+      
+      <ArticleGrid
+        articles={latestArticles}
+        title="جدیدترین مقالات"
+        subtitle="مطالب تازه درباره مد و استایل"
       />
       
       <CategoryGrid categories={categories} />

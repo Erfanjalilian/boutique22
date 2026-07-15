@@ -20,6 +20,7 @@ export function Header({
   const links = [
     { href: "/", label: "خانه" },
     { href: "/products", label: "فروشگاه" },
+    { href: "/articles", label: "مقالات" },
     { href: "/about", label: "درباره ما" },
     { href: "/contact", label: "تماس" },
   ];

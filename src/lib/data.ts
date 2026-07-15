@@ -7,6 +7,7 @@ import type {
   Category,
   Size,
   Color,
+  Article,
   OtpRecord,
   ContactInfo,
   AboutInfo,
@@ -121,6 +122,19 @@ export async function getColors(): Promise<Color[]> {
 
 export async function saveColors(colors: Color[]): Promise<void> {
   await writeJson("colors.json", colors);
+}
+
+export async function getArticles(): Promise<Article[]> {
+  return readJson<Article[]>("articles.json", []);
+}
+
+export async function saveArticles(articles: Article[]): Promise<void> {
+  await writeJson("articles.json", articles);
+}
+
+export async function getArticleById(id: string): Promise<Article | undefined> {
+  const articles = await getArticles();
+  return articles.find((article) => article.id === id);
 }
 
 export async function getOtps(): Promise<OtpRecord[]> {

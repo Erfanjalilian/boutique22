@@ -55,6 +55,14 @@ export interface Color {
   hex: string;
 }
 
+export interface Article {
+  id: string;
+  title: string;
+  image: string;
+  description: string;
+  createdAt: string;
+}
+
 export interface Product {
   id: string;
   name: string;
