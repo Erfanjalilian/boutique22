@@ -1,0 +1,20 @@
+[
+  {
+    "id": "banner-001",
+    "title": "تخفیف ویژه فصل تابستان",
+    "subtitle": "تا ۵۰٪ تخفیف روی کالکشن جدید لباس‌های راحتی",
+    "image": "/Image/banner-summer.jpg",
+    "buttonText": "همین حالا خرید کن",
+    "buttonHref": "/products",
+    "accent": "#ff7f50"
+  },
+  {
+    "id": "banner-002",
+    "title": "پیشنهاد شگفت‌انگیز امروز",
+    "subtitle": "ارسال رایگان برای سفارش‌های بالای ۵۰۰ هزار تومان",
+    "image": "/Image/banner-offer.jpg",
+    "buttonText": "مشاهده محصولات",
+    "buttonHref": "/products",
+    "accent": "#1e90ff"
+  }
+]

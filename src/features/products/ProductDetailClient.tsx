@@ -49,6 +49,7 @@ export function ProductDetailClient({
       name: product.name,
       price: product.price,
       image: product.images[0] || "/Image/placeholder-product.svg",
+      weight: product.weight || 0,
       quantity,
     });
     
@@ -142,6 +143,18 @@ export function ProductDetailClient({
               <p className="text-sm text-red-600">ناموجود</p>
             )}
           </div>
+
+          {product.preparationTime && product.preparationTime > 0 && (
+            <p className="text-sm text-muted leading-relaxed mb-4">
+              زمان آماده‌سازی: {product.preparationTime} دقیقه
+            </p>
+          )}
+
+          {product.weight && product.weight > 0 && (
+            <p className="text-sm text-muted leading-relaxed mb-4">
+              وزن: {product.weight} گرم
+            </p>
+          )}
 
           {/* Quantity Selector */}
           <div className="space-y-6">

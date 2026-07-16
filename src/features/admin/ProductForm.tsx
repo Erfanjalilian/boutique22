@@ -4,15 +4,17 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
+import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import type { Product } from "@/types";
+import type { Product, Category } from "@/types";
 
 interface ProductFormProps {
   product?: Product;
+  categories: Category[];
 }
 
-export function ProductForm({ product }: ProductFormProps) {
+export function ProductForm({ product, categories }: ProductFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -27,6 +29,8 @@ export function ProductForm({ product }: ProductFormProps) {
     bestSeller: product?.bestSeller || false,
     newArrival: product?.newArrival || false,
     stock: product?.stock?.toString() || "0",
+    preparationTime: product?.preparationTime?.toString() || "",
+    weight: product?.weight?.toString() || "",
   });
 
   async function handleSubmit(e: React.FormEvent) {
@@ -44,6 +48,8 @@ export function ProductForm({ product }: ProductFormProps) {
       bestSeller: form.bestSeller,
       newArrival: form.newArrival,
       stock: Number(form.stock),
+      preparationTime: Number(form.preparationTime || 0),
+      weight: Number(form.weight || 0),
     };
 
     const url = product
@@ -83,7 +89,7 @@ export function ProductForm({ product }: ProductFormProps) {
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
         />
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-4 gap-4">
           <Input
             label="قیمت (تومان)"
             type="number"
@@ -98,7 +104,32 @@ export function ProductForm({ product }: ProductFormProps) {
             value={form.stock}
             onChange={(e) => setForm({ ...form, stock: e.target.value })}
           />
+            <Input
+              label="زمان آماده‌سازی (دقیقه)"
+              type="number"
+              value={form.preparationTime}
+              onChange={(e) => setForm({ ...form, preparationTime: e.target.value })}
+            />
+            <Input
+              label="وزن (گرم)"
+              type="number"
+              value={form.weight}
+              onChange={(e) => setForm({ ...form, weight: e.target.value })}
+            />
         </div>
+        <Select
+          label="دسته‌بندی"
+          required
+          value={form.categoryId}
+          onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
+          options={[
+            { value: "", label: "انتخاب دسته‌بندی" },
+            ...categories.map((category) => ({
+              value: category.id,
+              label: category.name,
+            })),
+          ]}
+        />
       </Card>
 
       <Card className="p-6 space-y-4">

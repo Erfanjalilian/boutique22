@@ -32,6 +32,8 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  shippingCost: number;
+  totalWithShipping: number;
   wishlistItems: Product[];
   toggleWishlist: (product: Product) => void;
   addToWishlist: (product: Product) => void;
@@ -49,6 +51,7 @@ const CART_KEY = "boutique_cart";
 export function CartProvider({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
   const [items, setItems] = useState<CartItem[]>([]);
+  const [shippingRatePerKg, setShippingRatePerKg] = useState(0);
   const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [wishlistLoaded, setWishlistLoaded] = useState(false);
@@ -61,6 +64,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
       // ignore
     }
     setLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    // fetch settings for shipping rate
+    let mounted = true;
+    fetch('/api/settings')
+      .then((r) => r.json())
+      .then((data) => {
+        if (!mounted) return;
+        if (data?.success && typeof data.data.shippingRatePerKg === 'number') {
+          setShippingRatePerKg(data.data.shippingRatePerKg || 0);
+        }
+      })
+      .catch(() => {});
+    return () => { mounted = false; };
   }, []);
 
   useEffect(() => {
@@ -165,6 +183,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         name: product.name,
         price: product.price,
         image: product.images[0] || "/Image/placeholder-product.svg",
+        weight: product.weight || 0,
         quantity,
       });
       removeFromWishlist(product.id);
@@ -177,6 +196,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     (sum, i) => sum + i.price * i.quantity,
     0
   );
+  const totalWeightGrams = items.reduce((sum, i) => sum + ((i.weight || 0) * i.quantity), 0);
+  const totalWeightKg = totalWeightGrams / 1000;
+  const shippingCost = shippingRatePerKg ? shippingRatePerKg * totalWeightKg : 0;
+  const totalWithShipping = totalPrice + shippingCost;
   const wishlistCount = wishlistItems.length;
 
   return (
@@ -188,7 +211,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
         updateQuantity,
         clearCart,
         totalItems,
-        totalPrice,
+          totalPrice,
+          shippingCost,
+          totalWithShipping,
         wishlistItems,
         toggleWishlist,
         addToWishlist,

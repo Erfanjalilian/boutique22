@@ -77,6 +77,8 @@ export interface Product {
   bestSeller: boolean;
   newArrival: boolean;
   stock: number;
+  preparationTime?: number;
+  weight?: number;
   createdAt: string;
 }
 
@@ -88,6 +90,7 @@ export interface CartItem {
   quantity: number;
   size?: string;
   color?: string;
+  weight?: number;
 }
 
 export interface OrderItem {
@@ -152,6 +155,7 @@ export interface SiteSettings {
   footerText: string;
   footerLinks: { label: string; href: string }[];
   zibalMerchant?: string;
+  shippingRatePerKg?: number;
 }
 
 export interface SiteBanner {

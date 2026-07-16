@@ -44,6 +44,8 @@ const productSchema = z.object({
   bestSeller: z.boolean().default(false),
   newArrival: z.boolean().default(false),
   stock: z.number().min(0),
+  preparationTime: z.number().min(0).optional().default(0),
+  weight: z.number().min(0).optional().default(0),
 });
 
 async function requireAdmin() {

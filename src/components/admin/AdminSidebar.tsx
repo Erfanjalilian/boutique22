@@ -8,6 +8,7 @@ import { cn } from "@/utils/helpers";
 const links = [
   { href: "/admin", label: "داشبورد", icon: "📊" },
   { href: "/admin/products", label: "محصولات", icon: "👕" },
+  { href: "/admin/categories", label: "دسته‌بندی‌ها", icon: "🗂️" },
   { href: "/admin/articles", label: "مقالات", icon: "📰" },
   { href: "/admin/orders", label: "سفارش‌ها", icon: "📦" },
   { href: "/admin/users", label: "کاربران", icon: "👥" },

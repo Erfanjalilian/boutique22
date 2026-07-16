@@ -92,6 +92,12 @@ export function SettingsAdminClient({
             value={form.zibalMerchant || ""}
             onChange={(e) => setForm({ ...form, zibalMerchant: e.target.value })}
           />
+          <Input
+            label="هزینه ارسال به ازای هر کیلوگرم (تومان)"
+            type="number"
+            value={form.shippingRatePerKg ?? ""}
+            onChange={(e) => setForm({ ...form, shippingRatePerKg: Number(e.target.value) })}
+          />
         </Card>
 
         {message && <p className="text-sm text-green-400">{message}</p>}
