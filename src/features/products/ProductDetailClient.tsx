@@ -94,6 +94,26 @@ export function ProductDetailClient({
                 />
               </svg>
             </button>
+            {product.images.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setSelectedImage((prev) => (prev - 1 + product.images.length) % product.images.length)}
+                  className="absolute left-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/90 p-3 shadow-lg transition hover:bg-white"
+                  aria-label="عکس قبلی"
+                >
+                  <span className="text-xl">‹</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedImage((prev) => (prev + 1) % product.images.length)}
+                  className="absolute right-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/90 p-3 shadow-lg transition hover:bg-white"
+                  aria-label="عکس بعدی"
+                >
+                  <span className="text-xl">›</span>
+                </button>
+              </>
+            )}
             <Image
               src={product.images[selectedImage] || "/Image/placeholder-product.svg"}
               alt={product.name}
@@ -103,19 +123,33 @@ export function ProductDetailClient({
             />
           </div>
           {product.images.length > 1 && (
-            <div className="flex gap-3 mt-4">
-              {product.images.map((img, i) => (
-                <button
-                  key={i}
-                  onClick={() => setSelectedImage(i)}
-                  className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 bg-slate-50 transition-colors ${
-                    selectedImage === i ? "border-primary" : "border-border"
-                  }`}
-                >
-                  <Image src={img} alt="" fill className="object-contain" />
-                </button>
-              ))}
-            </div>
+            <>
+              <div className="flex items-center justify-center gap-2 mt-4">
+                {product.images.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setSelectedImage(i)}
+                    className={`h-2.5 w-2.5 rounded-full transition ${
+                      selectedImage === i ? "bg-primary" : "bg-border"
+                    }`}
+                  />
+                ))}
+              </div>
+              <div className="flex gap-3 mt-4 overflow-x-auto pb-1">
+                {product.images.map((img, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setSelectedImage(i)}
+                    className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 bg-slate-50 transition-colors ${
+                      selectedImage === i ? "border-primary" : "border-border"
+                    }`}
+                  >
+                    <Image src={img} alt="" fill className="object-contain" />
+                  </button>
+                ))}
+              </div>
+            </>
           )}
         </div>
 
