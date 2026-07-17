@@ -115,13 +115,7 @@ export function ProductsClient({
     ).sort() as string[];
   }, [initialProducts]);
 
-  const suggestions = useMemo(() => {
-    if (!searchTokens.length) return [];
-
-    return initialProducts
-      .filter((product) => matchesProduct(product, searchTokens, categories))
-      .slice(0, 6);
-  }, [categories, initialProducts, searchTokens]);
+  // suggestions removed: quick suggestion dropdown disabled
 
   const filtered = useMemo(() => {
     let result = [...initialProducts];
@@ -178,30 +172,7 @@ export function ProductsClient({
           value={search}
           onChange={(event) => setSearch(event.target.value)}
         />
-        {suggestions.length > 0 && search.trim() && (
-          <div className="absolute left-0 right-0 top-full z-20 mt-2 rounded-2xl border border-black/10 bg-white p-3 shadow-xl">
-            {suggestions.map((product) => {
-              const categoryName = categories.find((item) => item.id === product.categoryId)?.name ?? "";
-              return (
-                <Link
-                  key={product.id}
-                  href={`/products/${product.id}`}
-                  className="flex items-center justify-between rounded-xl px-3 py-2 text-sm transition-colors hover:bg-yellow-50"
-                >
-                  <span className="text-right">
-                    <span className="block font-medium text-black">
-                      <HighlightedText text={product.name} query={search} />
-                    </span>
-                    <span className="mt-0.5 block text-xs text-black/60">
-                      {categoryName} {product.brand ? `• ${product.brand}` : ""}
-                    </span>
-                  </span>
-                  <span className="text-xs font-medium text-yellow-600">مشاهده</span>
-                </Link>
-              );
-            })}
-          </div>
-        )}
+        {/* Quick suggestions removed: search will filter displayed products only */}
       </div>
 
       <Select
@@ -314,26 +285,7 @@ export function ProductsClient({
             </Button>
           </div>
 
-          {search.trim() && suggestions.length > 0 && (
-            <div className="mt-4 rounded-2xl border border-black/10 bg-white p-3">
-              <p className="mb-2 text-sm font-medium text-black">پیشنهادهای سریع</p>
-              <div className="flex flex-wrap gap-2">
-                {suggestions.map((product) => {
-                  const categoryName = categories.find((item) => item.id === product.categoryId)?.name ?? "";
-                  return (
-                    <Link
-                      key={product.id}
-                      href={`/products/${product.id}`}
-                      className="rounded-full border border-black/10 bg-yellow-50 px-3 py-1.5 text-sm text-black transition-colors hover:bg-yellow-100"
-                    >
-                      <HighlightedText text={product.name} query={search} />
-                      {categoryName ? ` · ${categoryName}` : ""}
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          {/* Quick suggestion chips removed */}
         </div>
       </div>
 

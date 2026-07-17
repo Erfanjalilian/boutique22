@@ -65,24 +65,18 @@ export function SettingsAdminClient({
 
         <Card className="p-6 space-y-4">
           <h2 className="font-semibold">لوگو و فاویکون</h2>
-          <div>
-            <p className="text-sm font-medium text-muted mb-2">لوگو</p>
-            <ImageUpload
-              images={form.logo ? [form.logo] : []}
-              onChange={(imgs) => setForm({ ...form, logo: imgs[0] || "" })}
-              multiple={false}
-              prefix="logo"
-            />
-          </div>
-          <div>
-            <p className="text-sm font-medium text-muted mb-2">فاویکون</p>
-            <ImageUpload
-              images={form.favicon ? [form.favicon] : []}
-              onChange={(imgs) => setForm({ ...form, favicon: imgs[0] || "" })}
-              multiple={false}
-              prefix="favicon"
-            />
-          </div>
+          <Input
+            label="لینک لوگو"
+            placeholder="https://.../logo.png"
+            value={form.logo || ""}
+            onChange={(e) => setForm({ ...form, logo: e.target.value })}
+          />
+          <Input
+            label="لینک فاویکون"
+            placeholder="https://.../favicon.ico"
+            value={form.favicon || ""}
+            onChange={(e) => setForm({ ...form, favicon: e.target.value })}
+          />
         </Card>
 
         <Card className="p-6 space-y-4">
