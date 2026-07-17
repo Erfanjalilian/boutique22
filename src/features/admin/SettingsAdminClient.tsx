@@ -93,6 +93,12 @@ export function SettingsAdminClient({
             value={form.shippingRatePerKg ?? ""}
             onChange={(e) => setForm({ ...form, shippingRatePerKg: Number(e.target.value) })}
           />
+          <Input
+            label="هزینه پیک (تومان)"
+            type="number"
+            value={form.pickupShippingCost ?? ""}
+            onChange={(e) => setForm({ ...form, pickupShippingCost: Number(e.target.value) })}
+          />
         </Card>
 
         {message && <p className="text-sm text-green-400">{message}</p>}

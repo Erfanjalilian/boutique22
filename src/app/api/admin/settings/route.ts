@@ -14,6 +14,7 @@ const settingsSchema = z.object({
     .optional(),
   zibalMerchant: z.string().optional(),
   shippingRatePerKg: z.number().min(0).optional(),
+  pickupShippingCost: z.number().min(0).optional(),
 });
 
 export async function GET() {

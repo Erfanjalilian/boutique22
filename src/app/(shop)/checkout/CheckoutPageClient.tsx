@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/hooks/useCart";
 import { Input } from "@/components/ui/Input";
@@ -8,19 +8,55 @@ import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { formatPrice } from "@/utils/helpers";
+import {
+  getAvailableShippingMethods,
+  getShippingCost,
+  getShippingMethodLabel,
+  ShippingMethod,
+  type ShippingMethodValue,
+} from "@/lib/shipping";
 
 export default function CheckoutPageClient() {
   const router = useRouter();
   const { items, totalPrice, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [pickupShippingCost, setPickupShippingCost] = useState<number | undefined>(undefined);
+  const [shippingMethod, setShippingMethod] = useState<ShippingMethodValue>(ShippingMethod.TIPAX);
   const [form, setForm] = useState({
     fullName: "",
     phone: "",
     address: "",
     postalCode: "",
+    province: "",
+    city: "",
     notes: "",
   });
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.success && typeof data.data?.pickupShippingCost === "number") {
+          setPickupShippingCost(data.data.pickupShippingCost);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const availableMethods = getAvailableShippingMethods(form.province, form.city);
+
+  useEffect(() => {
+    const fallbackMethod = availableMethods[0] || ShippingMethod.TIPAX;
+    setShippingMethod((current) =>
+      availableMethods.includes(current) ? current : fallbackMethod
+    );
+  }, [availableMethods]);
+
+  const shippingCost = getShippingCost(shippingMethod, {
+    pickupShippingCost,
+  });
+  const finalTotal = totalPrice + shippingCost;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -30,7 +66,7 @@ export default function CheckoutPageClient() {
     const res = await fetch("/api/orders", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items, ...form }),
+      body: JSON.stringify({ items, ...form, shippingMethod }),
     });
 
     const data = await res.json();
@@ -74,6 +110,18 @@ export default function CheckoutPageClient() {
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
           />
           <Input
+            label="استان"
+            required
+            value={form.province}
+            onChange={(e) => setForm({ ...form, province: e.target.value })}
+          />
+          <Input
+            label="شهر"
+            required
+            value={form.city}
+            onChange={(e) => setForm({ ...form, city: e.target.value })}
+          />
+          <Input
             label="آدرس"
             required
             value={form.address}
@@ -93,15 +141,75 @@ export default function CheckoutPageClient() {
           />
         </Card>
 
-        <Card className="p-6">
-          <div className="flex justify-between items-center mb-4">
-            <span className="font-semibold">مبلغ کل</span>
-            <span className="text-xl font-bold text-primary">
-              {formatPrice(totalPrice)}
-            </span>
+        <Card className="p-6 space-y-4">
+          <h2 className="font-semibold text-lg">روش ارسال</h2>
+          <div className="space-y-3">
+            {availableMethods.map((method) => (
+              <label
+                key={method}
+                className={`flex items-start gap-3 rounded-2xl border p-4 cursor-pointer transition-colors ${
+                  shippingMethod === method
+                    ? "border-primary bg-primary/5"
+                    : "border-border"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="shippingMethod"
+                  checked={shippingMethod === method}
+                  onChange={() => setShippingMethod(method)}
+                  className="mt-1"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="font-semibold">
+                      {getShippingMethodLabel(method)}
+                    </span>
+                    <span className="text-sm text-primary">
+                      {method === ShippingMethod.TIPAX
+                        ? "پس‌کرایه"
+                        : `${formatPrice(shippingCost)} (${pickupShippingCost ? `هزینه پیک: ${formatPrice(pickupShippingCost)}` : "هزینه پیک"})`}
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted mt-1">
+                    {method === ShippingMethod.PICKUP
+                      ? "ارسال با پیک برای این آدرس در شهر قم انجام می‌شود."
+                      : "هزینه ارسال توسط تیپاکس هنگام تحویل کالا از گیرنده دریافت می‌شود."}
+                  </p>
+                </div>
+              </label>
+            ))}
           </div>
-          {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
-          <Button type="submit" className="w-full" size="lg" loading={loading}>
+        </Card>
+
+        <Card className="p-6">
+          <div className="space-y-3 text-sm">
+            <div className="flex justify-between text-muted">
+              <span>جمع جزء</span>
+              <span>{formatPrice(totalPrice)}</span>
+            </div>
+            <div className="flex justify-between items-start text-muted">
+              <div>
+                <span>هزینه ارسال</span>
+                {shippingMethod === ShippingMethod.TIPAX && (
+                  <p className="text-xs mt-1 text-muted">
+                    هزینه ارسال توسط تیپاکس هنگام تحویل کالا از گیرنده دریافت می‌شود.
+                  </p>
+                )}
+              </div>
+              <span>
+                {shippingMethod === ShippingMethod.TIPAX
+                  ? "پس‌کرایه"
+                  : formatPrice(shippingCost)}
+              </span>
+            </div>
+            <div className="border-t border-border pt-3 flex justify-between font-semibold text-lg">
+              <span>مبلغ قابل پرداخت</span>
+              <span className="text-primary">{formatPrice(finalTotal)}</span>
+            </div>
+          </div>
+          {error && <p className="text-red-400 text-sm mb-4 mt-4">{error}</p>}
+          <Button type="submit" className="w-full mt-6" size="lg" loading={loading}>
             ثبت سفارش
           </Button>
         </Card>

@@ -115,6 +115,10 @@ export interface Order {
   phone: string;
   address: string;
   postalCode: string;
+  province: string;
+  city: string;
+  shippingMethod: "pickup" | "tipax";
+  shippingCost: number;
   notes: string;
   paymentTrackId?: string;
   paymentReferenceNumber?: string;
@@ -152,6 +156,7 @@ export interface SiteSettings {
   footerLinks: { label: string; href: string }[];
   zibalMerchant?: string;
   shippingRatePerKg?: number;
+  pickupShippingCost?: number;
 }
 
 export interface SiteBanner {

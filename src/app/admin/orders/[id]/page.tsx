@@ -4,6 +4,13 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { formatPrice, formatDate } from "@/utils/helpers";
 import Link from "next/link";
+import type { Order } from "@/types";
+
+function getShippingMethodLabel(method?: Order["shippingMethod"]) {
+  if (method === "pickup") return "پیک";
+  if (method === "tipax") return "تیپاکس";
+  return "—";
+}
 
 export default async function AdminOrderDetailPage({
   params,
@@ -45,7 +52,16 @@ export default async function AdminOrderDetailPage({
           <p><strong>{order.fullName}</strong></p>
           <p className="text-muted">{order.address}</p>
           <p className="text-muted">{order.postalCode} · {order.phone}</p>
-          {order.notes && <p className="text-muted">توضیحات: {order.notes}</p>}          {order.paymentTrackId && (
+          <p className="text-muted">
+            روش ارسال: <span className="font-medium text-foreground">{getShippingMethodLabel(order.shippingMethod)}</span>
+          </p>
+          {order.shippingMethod === "pickup" && (
+            <p className="text-muted">
+              هزینه پیک: <span className="font-medium text-foreground">{formatPrice(order.shippingCost)}</span>
+            </p>
+          )}
+          {order.notes && <p className="text-muted">توضیحات: {order.notes}</p>}
+          {order.paymentTrackId && (
             <p className="text-muted">
               شناسه پیگیری پرداخت: <span className="font-mono">{order.paymentTrackId}</span>
             </p>
@@ -57,7 +73,8 @@ export default async function AdminOrderDetailPage({
           )}
           {order.paymentVerifiedAt && (
             <p className="text-muted">تاریخ تأیید پرداخت: {formatDate(order.paymentVerifiedAt)}</p>
-          )}        </div>
+          )}
+        </div>
       </Card>
     </div>
   );

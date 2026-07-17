@@ -8,6 +8,11 @@ import {
   getSettings,
 } from "@/lib/data";
 import { generateId } from "@/utils/helpers";
+import {
+  getAvailableShippingMethods,
+  getShippingCost,
+  ShippingMethod,
+} from "@/lib/shipping";
 import { apiSuccess, apiError } from "@/utils/api";
 import {
   getZibalGatewayUrl,
@@ -32,6 +37,11 @@ const createOrderSchema = z.object({
   phone: z.string().min(10),
   address: z.string().min(5),
   postalCode: z.string().min(4),
+  province: z.string().min(2).optional().default(""),
+  city: z.string().min(2).optional().default(""),
+  shippingMethod: z
+    .enum([ShippingMethod.PICKUP, ShippingMethod.TIPAX])
+    .optional(),
   notes: z.string().optional(),
 });
 
@@ -60,15 +70,30 @@ export async function POST(request: Request) {
       return apiError(parsed.error.issues[0].message);
     }
 
-    const { items, fullName, phone, address, postalCode, notes } =
-      parsed.data;
+    const {
+      items,
+      fullName,
+      phone,
+      address,
+      postalCode,
+      province,
+      city,
+      shippingMethod,
+      notes,
+    } = parsed.data;
 
-    const total = items.reduce(
+    const subtotal = items.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
 
     const settings = await getSettings();
+    const availableMethods = getAvailableShippingMethods(province, city);
+    const resolvedShippingMethod = shippingMethod && availableMethods.includes(shippingMethod)
+      ? shippingMethod
+      : availableMethods[0] || ShippingMethod.TIPAX;
+    const shippingCost = getShippingCost(resolvedShippingMethod, settings);
+    const total = subtotal + shippingCost;
     const merchant =
       process.env.ZIBAL_MERCHANT?.trim() || settings.zibalMerchant?.trim();
     if (!merchant) {
@@ -94,6 +119,10 @@ export async function POST(request: Request) {
       phone,
       address,
       postalCode,
+      province,
+      city,
+      shippingMethod: resolvedShippingMethod,
+      shippingCost,
       notes: notes || "",
       paymentTrackId: undefined as string | undefined,
       paymentReferenceNumber: undefined as string | undefined,

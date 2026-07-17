@@ -154,6 +154,7 @@ export async function getSettings(): Promise<SiteSettings> {
     logo: "/Image/logo.svg",
     footerText: "",
     footerLinks: [],
+    pickupShippingCost: 30000,
   });
 }
 
