@@ -64,6 +64,12 @@ export function ProductsAdminClient({
                   <p className="text-sm text-muted">
                     {category?.name} · موجودی: {product.stock.toLocaleString("fa-IR")}
                   </p>
+                  {(product.netWeight || 0) > 0 && (
+                    <p className="text-sm text-muted">وزن خالص: {product.netWeight} گرم</p>
+                  )}
+                  {(product.packageWeight || 0) > 0 && (
+                    <p className="text-sm text-muted">وزن با بسته‌بندی: {product.packageWeight} گرم</p>
+                  )}
                 </div>
                 <p className="font-semibold text-primary">{formatPrice(product.price)}</p>
                 <div className="flex gap-2">

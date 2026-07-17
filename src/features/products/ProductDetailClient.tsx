@@ -50,7 +50,8 @@ export function ProductDetailClient({
       name: product.name,
       price: product.price,
       image: product.images[0] || "/Image/placeholder-product.svg",
-      weight: product.weight || 0,
+      // store sum weight for shipping calculations (net + package)
+      weight: (product.netWeight || 0) + (product.packageWeight || 0),
       quantity,
     });
     
@@ -116,7 +117,7 @@ export function ProductDetailClient({
               </>
             )}
             <div
-              className="relative h-full w-full"
+              className="relative h-full w-full flex items-center justify-center bg-white"
               onTouchStart={(e) => {
                 touchStartX.current = e.touches[0]?.clientX ?? null;
               }}
@@ -139,7 +140,7 @@ export function ProductDetailClient({
                 src={product.images[selectedImage] || "/Image/placeholder-product.svg"}
                 alt={product.name}
                 fill
-                className="absolute inset-0 object-cover"
+                className="absolute inset-0 object-contain object-center"
                 priority
               />
             </div>
@@ -206,9 +207,14 @@ export function ProductDetailClient({
             </p>
           )}
 
-          {product.weight && product.weight > 0 && (
+          {(product.netWeight || 0) > 0 && (
+            <p className="text-sm text-muted leading-relaxed mb-2">
+              وزن خالص: {product.netWeight} گرم
+            </p>
+          )}
+          {(product.packageWeight || 0) > 0 && (
             <p className="text-sm text-muted leading-relaxed mb-4">
-              وزن: {product.weight} گرم
+              وزن با بسته‌بندی: {product.packageWeight} گرم
             </p>
           )}
 

@@ -43,7 +43,8 @@ const productSchema = z.object({
   newArrival: z.boolean().optional(),
   stock: z.number().min(0).optional(),
   preparationTime: z.number().min(0).optional(),
-  weight: z.number().min(0).optional(),
+  netWeight: z.number().min(0).optional(),
+  packageWeight: z.number().min(0).optional(),
 });
 
 export async function PUT(

@@ -78,7 +78,9 @@ export interface Product {
   newArrival: boolean;
   stock: number;
   preparationTime?: number;
-  weight?: number;
+  // Weight fields (grams)
+  netWeight?: number; // وزن خالص محصول
+  packageWeight?: number; // وزن شامل بسته‌بندی یا وزن دسته‌بندی
   createdAt: string;
 }
 

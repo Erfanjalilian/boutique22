@@ -30,7 +30,8 @@ export function ProductForm({ product, categories }: ProductFormProps) {
     newArrival: product?.newArrival || false,
     stock: product?.stock?.toString() || "0",
     preparationTime: product?.preparationTime?.toString() || "",
-    weight: product?.weight?.toString() || "",
+    netWeight: product?.netWeight?.toString() || "",
+    packageWeight: product?.packageWeight?.toString() || "",
   });
 
   async function handleSubmit(e: React.FormEvent) {
@@ -49,7 +50,8 @@ export function ProductForm({ product, categories }: ProductFormProps) {
       newArrival: form.newArrival,
       stock: Number(form.stock),
       preparationTime: Number(form.preparationTime || 0),
-      weight: Number(form.weight || 0),
+      netWeight: Number(form.netWeight || 0),
+      packageWeight: Number(form.packageWeight || 0),
     };
 
     const url = product
@@ -112,10 +114,16 @@ export function ProductForm({ product, categories }: ProductFormProps) {
             onChange={(e) => setForm({ ...form, preparationTime: e.target.value })}
           />
           <Input
-            label="وزن (گرم)"
+            label="وزن خالص (گرم)"
             type="number"
-            value={form.weight}
-            onChange={(e) => setForm({ ...form, weight: e.target.value })}
+            value={form.netWeight}
+            onChange={(e) => setForm({ ...form, netWeight: e.target.value })}
+          />
+          <Input
+            label="وزن با بسته‌بندی (گرم)"
+            type="number"
+            value={form.packageWeight}
+            onChange={(e) => setForm({ ...form, packageWeight: e.target.value })}
           />
         </div>
         <Select

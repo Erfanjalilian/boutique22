@@ -44,7 +44,8 @@ const productSchema = z.object({
   newArrival: z.boolean().default(false),
   stock: z.number().min(0),
   preparationTime: z.number().min(0).optional().default(0),
-  weight: z.number().min(0).optional().default(0),
+  netWeight: z.number().min(0).optional().default(0),
+  packageWeight: z.number().min(0).optional().default(0),
 });
 
 export async function GET() {

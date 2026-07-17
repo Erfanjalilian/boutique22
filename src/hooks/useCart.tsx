@@ -183,7 +183,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         name: product.name,
         price: product.price,
         image: product.images[0] || "/Image/placeholder-product.svg",
-        weight: product.weight || 0,
+        weight: (product.netWeight || 0) + (product.packageWeight || 0),
         quantity,
       });
       removeFromWishlist(product.id);
