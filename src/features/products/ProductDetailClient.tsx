@@ -116,7 +116,7 @@ export function ProductDetailClient({
               </>
             )}
             <div
-              className="h-full w-full"
+              className="relative h-full w-full"
               onTouchStart={(e) => {
                 touchStartX.current = e.touches[0]?.clientX ?? null;
               }}
@@ -139,7 +139,7 @@ export function ProductDetailClient({
                 src={product.images[selectedImage] || "/Image/placeholder-product.svg"}
                 alt={product.name}
                 fill
-                className="object-cover"
+                className="absolute inset-0 object-cover"
                 priority
               />
             </div>

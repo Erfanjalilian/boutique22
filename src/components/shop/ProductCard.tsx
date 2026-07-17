@@ -21,12 +21,12 @@ export function ProductCard({ product }: { product: Product }) {
     <div className="group relative block">
       <Link href={`/products/${product.id}`} className="block">
         <div className="rounded-2xl bg-white border border-black/10 overflow-hidden transition-all duration-300 hover:border-yellow-400/50 hover:shadow-xl hover:shadow-yellow-400/5">
-          <div className="relative aspect-[3/4] bg-slate-50 overflow-hidden">
+          <div className="relative aspect-[3/4] bg-white overflow-hidden">
             <Image
               src={product.images[0] || "/Image/placeholder-product.svg"}
               alt={product.name}
               fill
-              className="object-contain transition-transform duration-500 group-hover:scale-105"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
               sizes="(max-width: 768px) 50vw, 25vw"
             />
             {product.newArrival && (
