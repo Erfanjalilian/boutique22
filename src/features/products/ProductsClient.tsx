@@ -25,17 +25,9 @@ function buildSearchTokens(query: string) {
 }
 
 function matchesProduct(product: Product, tokens: string[], categories: Category[]) {
-  const categoryName = categories.find((item) => item.id === product.categoryId)?.name ?? "";
-  const haystack = [
-    product.name,
-    product.description,
-    categoryName,
-    product.brand ?? "",
-  ]
-    .join(" ")
-    .toLowerCase();
-
-  return tokens.every((token) => haystack.includes(token));
+  // Match only against the product name (title) as requested by the user.
+  const name = (product.name || "").toLowerCase();
+  return tokens.every((token) => name.includes(token));
 }
 
 function HighlightedText({ text, query }: { text: string; query: string }) {
@@ -168,7 +160,7 @@ export function ProductsClient({
       <div className="relative">
         <Input
           label="جستجو"
-          placeholder="نام محصول، دسته‌بندی یا برند..."
+          placeholder="نام محصول..."
           value={search}
           onChange={(event) => setSearch(event.target.value)}
         />
@@ -257,7 +249,7 @@ export function ProductsClient({
             <p className="text-sm font-semibold text-yellow-600">جستجوی هوشمند</p>
             <h1 className="mt-2 text-3xl font-bold text-black sm:text-4xl">محصول موردنظر را سریع پیدا کنید</h1>
             <p className="mt-3 text-sm leading-7 text-black/70 sm:text-base">
-              با جستجو در نام محصول، دسته‌بندی، برند و محدوده قیمت، نتیجه‌های مرتبط و دقیق را در چند لحظه ببینید.
+              با جستجو در نام محصول، نتیجه‌های مرتبط و دقیق را در چند لحظه ببینید.
             </p>
           </div>
           <div className="rounded-2xl border border-black/10 bg-white/80 p-4 shadow-sm">
