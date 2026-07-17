@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { getSession } from "@/lib/auth";
 import { getSettings, saveSettings } from "@/lib/data";
 import { apiSuccess, apiError } from "@/utils/api";
 
@@ -23,8 +22,6 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
-  const session = await getSession();
-  if (!session || session.role !== "admin") return apiError("Unauthorized", 401);
 
   const body = await request.json();
   const parsed = settingsSchema.safeParse(body);

@@ -26,6 +26,7 @@ export function CategoriesAdminClient({
 
     const res = await fetch("/api/admin/categories", {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, image: imageUrl.trim() || undefined }),
     });
@@ -41,7 +42,10 @@ export function CategoriesAdminClient({
 
   async function handleDelete(id: string) {
     if (!confirm("آیا از حذف این دسته‌بندی اطمینان دارید؟")) return;
-    const res = await fetch(`/api/admin/categories?id=${id}`, { method: "DELETE" });
+    const res = await fetch(`/api/admin/categories?id=${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
     if (res.ok) {
       setCategories(categories.filter((c) => c.id !== id));
     }
@@ -64,6 +68,7 @@ export function CategoriesAdminClient({
     setLoading(true);
     const res = await fetch("/api/admin/categories", {
       method: "PUT",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, name: editName.trim(), image: editImageUrl.trim() || undefined }),
     });

@@ -22,6 +22,7 @@ export function ContactAdminClient({
 
     const res = await fetch("/api/admin/contact", {
       method: "PUT",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
     });

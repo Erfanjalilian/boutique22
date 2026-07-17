@@ -20,27 +20,6 @@ async function getSession(request: NextRequest) {
 }
 
 export async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-  const session = await getSession(request);
-
-  if (pathname.startsWith("/admin")) {
-    if (session && session.role !== "admin") {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
-    }
-    return NextResponse.next();
-  }
-
-  if (pathname.startsWith("/dashboard")) {
-    if (!session) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-  }
-
-  if (pathname === "/login" && session) {
-    const redirect = session.role === "admin" ? "/admin" : "/dashboard";
-    return NextResponse.redirect(new URL(redirect, request.url));
-  }
-
   return NextResponse.next();
 }
 

@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { getSession } from "@/lib/auth";
 import { getBanners, saveBanners } from "@/lib/data";
 import { apiSuccess, apiError } from "@/utils/api";
 
@@ -13,20 +12,12 @@ const bannerSchema = z.object({
   accent: z.string().optional(),
 });
 
-async function requireAdmin() {
-  const session = await getSession();
-  if (!session || session.role !== "admin") return null;
-  return session;
-}
-
 export async function GET() {
-  if (!(await requireAdmin())) return apiError("Unauthorized", 401);
   const banners = await getBanners();
   return apiSuccess(banners);
 }
 
 export async function POST(request: Request) {
-  if (!(await requireAdmin())) return apiError("Unauthorized", 401);
 
   try {
     const body = await request.json();

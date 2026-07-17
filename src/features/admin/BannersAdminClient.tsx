@@ -31,7 +31,7 @@ export function BannersAdminClient() {
     setFetchError("");
 
     try {
-      const res = await fetch("/api/admin/banners");
+      const res = await fetch("/api/admin/banners", { credentials: "include" });
       const data = await res.json();
 
       if (res.ok && data.success) {
@@ -66,6 +66,7 @@ export function BannersAdminClient() {
 
     const res = await fetch(`/api/admin/banners/${editingId}`, {
       method: "PUT",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(draft),
     });

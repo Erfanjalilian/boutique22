@@ -27,6 +27,7 @@ export function ArticlesAdminClient({
 
     const res = await fetch("/api/admin/articles", {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title, image, description }),
     });
@@ -47,7 +48,10 @@ export function ArticlesAdminClient({
 
   async function handleDelete(id: string) {
     if (!confirm("آیا از حذف این مقاله اطمینان دارید؟")) return;
-    const res = await fetch(`/api/admin/articles/${id}`, { method: "DELETE" });
+    const res = await fetch(`/api/admin/articles/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
     const data = await res.json();
 
     if (data.success) {

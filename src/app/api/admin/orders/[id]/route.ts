@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { getSession } from "@/lib/auth";
 import { getOrders, saveOrders } from "@/lib/data";
 import { apiSuccess, apiError } from "@/utils/api";
 
@@ -17,8 +16,6 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getSession();
-  if (!session || session.role !== "admin") return apiError("Unauthorized", 401);
 
   const { id } = await params;
   const body = await request.json();

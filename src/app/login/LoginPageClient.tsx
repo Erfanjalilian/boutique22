@@ -131,6 +131,7 @@ export default function LoginPageClient() {
 
     const res = await fetch("/api/auth/admin-login", {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
     });
@@ -153,6 +154,7 @@ export default function LoginPageClient() {
 
     const res = await fetch("/api/auth/login", {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
     });
@@ -175,6 +177,7 @@ export default function LoginPageClient() {
 
     const res = await fetch("/api/auth/register", {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         username,
@@ -212,6 +215,7 @@ export default function LoginPageClient() {
     setError("");
     const res = await fetch("/api/auth/verify-otp", {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ phone, code }),
     });

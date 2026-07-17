@@ -28,6 +28,7 @@ export function OrdersAdminClient({
   async function updateStatus(id: string, status: OrderStatus) {
     const res = await fetch(`/api/admin/orders/${id}`, {
       method: "PUT",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),
     });

@@ -104,18 +104,19 @@ export function ProductForm({ product, categories }: ProductFormProps) {
             value={form.stock}
             onChange={(e) => setForm({ ...form, stock: e.target.value })}
           />
-            <Input
-              label="زمان آماده‌سازی (دقیقه)"
-              type="number"
-              value={form.preparationTime}
-              onChange={(e) => setForm({ ...form, preparationTime: e.target.value })}
-            />
-            <Input
-              label="وزن (گرم)"
-              type="number"
-              value={form.weight}
-              onChange={(e) => setForm({ ...form, weight: e.target.value })}
-            />
+          <Input
+            label="زمان آماده‌سازی (روز)"
+            type="number"
+            min={0}
+            value={form.preparationTime}
+            onChange={(e) => setForm({ ...form, preparationTime: e.target.value })}
+          />
+          <Input
+            label="وزن (گرم)"
+            type="number"
+            value={form.weight}
+            onChange={(e) => setForm({ ...form, weight: e.target.value })}
+          />
         </div>
         <Select
           label="دسته‌بندی"

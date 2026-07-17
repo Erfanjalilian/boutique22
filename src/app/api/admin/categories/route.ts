@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { getSession } from "@/lib/auth";
 import { getCategories, saveCategories } from "@/lib/data";
 import { generateId, slugify } from "@/utils/helpers";
 import { apiSuccess, apiError } from "@/utils/api";
@@ -9,19 +8,12 @@ const categorySchema = z.object({
   image: z.string().optional(),
 });
 
-async function requireAdmin() {
-  const session = await getSession();
-  if (!session || session.role !== "admin") return null;
-  return session;
-}
-
 export async function GET() {
   const categories = await getCategories();
   return apiSuccess(categories);
 }
 
 export async function POST(request: Request) {
-  if (!(await requireAdmin())) return apiError("Unauthorized", 401);
 
   const body = await request.json();
   const parsed = categorySchema.safeParse(body);
@@ -40,7 +32,6 @@ export async function POST(request: Request) {
 }
 
 export async function PUT(request: Request) {
-  if (!(await requireAdmin())) return apiError("Unauthorized", 401);
 
   const body = await request.json();
   const { id, ...data } = body;
@@ -60,7 +51,6 @@ export async function PUT(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  if (!(await requireAdmin())) return apiError("Unauthorized", 401);
 
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");

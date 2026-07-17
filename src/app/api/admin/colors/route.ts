@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { getSession } from "@/lib/auth";
 import { getColors, saveColors } from "@/lib/data";
 import { generateId } from "@/utils/helpers";
 import { apiSuccess, apiError } from "@/utils/api";
@@ -9,19 +8,12 @@ const colorSchema = z.object({
   hex: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
 });
 
-async function requireAdmin() {
-  const session = await getSession();
-  if (!session || session.role !== "admin") return null;
-  return session;
-}
-
 export async function GET() {
   const colors = await getColors();
   return apiSuccess(colors);
 }
 
 export async function POST(request: Request) {
-  if (!(await requireAdmin())) return apiError("Unauthorized", 401);
 
   const body = await request.json();
   const parsed = colorSchema.safeParse(body);
@@ -35,7 +27,6 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  if (!(await requireAdmin())) return apiError("Unauthorized", 401);
 
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");

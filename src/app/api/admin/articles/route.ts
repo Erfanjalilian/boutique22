@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { getAdminSessionOrFallback } from "@/lib/auth";
 import { getArticles, saveArticles } from "@/lib/data";
 import { generateId } from "@/utils/helpers";
 import { apiSuccess, apiError } from "@/utils/api";
@@ -10,20 +9,12 @@ const articleSchema = z.object({
   description: z.string().min(1),
 });
 
-async function requireAdmin() {
-  const session = await getAdminSessionOrFallback();
-  if (!session || session.role !== "admin") return null;
-  return session;
-}
-
 export async function GET() {
-  if (!(await requireAdmin())) return apiError("Unauthorized", 401);
   const articles = await getArticles();
   return apiSuccess(articles);
 }
 
 export async function POST(request: Request) {
-  if (!(await requireAdmin())) return apiError("Unauthorized", 401);
 
   try {
     const body = await request.json();

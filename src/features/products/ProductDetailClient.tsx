@@ -146,7 +146,7 @@ export function ProductDetailClient({
 
           {product.preparationTime && product.preparationTime > 0 && (
             <p className="text-sm text-muted leading-relaxed mb-4">
-              زمان آماده‌سازی: {product.preparationTime} دقیقه
+              زمان آماده‌سازی: {product.preparationTime} روز
             </p>
           )}
 

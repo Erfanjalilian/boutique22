@@ -26,7 +26,10 @@ export function ProductsAdminClient({
   async function handleDelete(id: string) {
     if (!confirm("آیا از حذف این محصول اطمینان دارید؟")) return;
 
-    const res = await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
+    const res = await fetch(`/api/admin/products/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
     if (res.ok) {
       setProducts((current) => current.filter((p) => p.id !== id));
       router.refresh();
