@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/useToast";
@@ -27,6 +27,7 @@ export function ProductDetailClient({
   const liked = isWishlisted(product.id);
 
   const category = categories.find((c) => c.id === product.categoryId);
+  const touchStartX = useRef<number | null>(null);
 
   function handleAddToCart() {
     // Clear previous error
@@ -114,13 +115,34 @@ export function ProductDetailClient({
                 </button>
               </>
             )}
-            <Image
-              src={product.images[selectedImage] || "/Image/placeholder-product.svg"}
-              alt={product.name}
-              fill
-              className="object-contain"
-              priority
-            />
+            <div
+              className="h-full w-full"
+              onTouchStart={(e) => {
+                touchStartX.current = e.touches[0]?.clientX ?? null;
+              }}
+              onTouchMove={(e) => {
+                if (touchStartX.current === null) return;
+                const currentX = e.touches[0]?.clientX ?? null;
+                if (currentX === null) return;
+                const deltaX = currentX - touchStartX.current;
+                if (Math.abs(deltaX) > 60) {
+                  if (deltaX < 0) {
+                    setSelectedImage((prev) => (prev + 1) % product.images.length);
+                  } else {
+                    setSelectedImage((prev) => (prev - 1 + product.images.length) % product.images.length);
+                  }
+                  touchStartX.current = null;
+                }
+              }}
+            >
+              <Image
+                src={product.images[selectedImage] || "/Image/placeholder-product.svg"}
+                alt={product.name}
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
           </div>
           {product.images.length > 1 && (
             <>
