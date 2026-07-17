@@ -26,7 +26,7 @@ export function ProductCard({ product }: { product: Product }) {
               src={product.images[0] || "/Image/placeholder-product.svg"}
               alt={product.name}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              className="object-contain transition-all duration-500"
               sizes="(max-width: 768px) 50vw, 25vw"
             />
             {product.newArrival && (
