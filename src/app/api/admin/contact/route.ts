@@ -10,8 +10,6 @@ const contactSchema = z.object({
     .object({
       eitaaChannel: z.string().optional(),
       eitaaPv: z.string().optional(),
-      facebook: z.string().optional(),
-      telegram: z.string().optional(),
     })
     .optional(),
 });

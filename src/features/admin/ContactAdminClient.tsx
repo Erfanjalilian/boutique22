@@ -56,16 +56,6 @@ export function ContactAdminClient({
               socialMedia: { ...form.socialMedia, eitaaPv: e.target.value },
             })}
           />
-          <Input
-            label="لینک فیسبوک"
-            value={form.socialMedia.facebook || ""}
-            onChange={(e) => setForm({ ...form, socialMedia: { ...form.socialMedia, facebook: e.target.value } })}
-          />
-          <Input
-            label="لینک تلگرام"
-            value={form.socialMedia.telegram || ""}
-            onChange={(e) => setForm({ ...form, socialMedia: { ...form.socialMedia, telegram: e.target.value } })}
-          />
           {message && <p className="text-sm text-green-400">{message}</p>}
           <Button type="submit" loading={loading}>ذخیره تغییرات</Button>
         </form>

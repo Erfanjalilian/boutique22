@@ -133,8 +133,6 @@ export interface ContactInfo {
   socialMedia: {
     eitaaChannel?: string;
     eitaaPv?: string;
-    facebook?: string;
-    telegram?: string;
   };
 }
 

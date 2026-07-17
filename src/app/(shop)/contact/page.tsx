@@ -23,8 +23,6 @@ export default async function ContactPage() {
       label: "پی وی ایتا",
       url: buildEitaaUrl(contact.socialMedia.eitaaPv, false),
     },
-    { key: "facebook", label: "فیسبوک", url: contact.socialMedia.facebook },
-    { key: "telegram", label: "تلگرام", url: contact.socialMedia.telegram },
   ].filter((s) => s.url);
 
   return (
