@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { formatPrice } from "@/utils/helpers";
 import {
-  getAvailableShippingMethods,
   getShippingCost,
   getShippingMethodLabel,
+  isQomAddress,
   ShippingMethod,
   type ShippingMethodValue,
 } from "@/lib/shipping";
@@ -44,14 +44,13 @@ export default function CheckoutPageClient() {
       .catch(() => {});
   }, []);
 
-  const availableMethods = getAvailableShippingMethods(form.province, form.city);
+  const recommendedShippingMethod = isQomAddress(form.province, form.city)
+    ? ShippingMethod.PICKUP
+    : ShippingMethod.TIPAX;
 
   useEffect(() => {
-    const fallbackMethod = availableMethods[0] || ShippingMethod.TIPAX;
-    setShippingMethod((current) =>
-      availableMethods.includes(current) ? current : fallbackMethod
-    );
-  }, [availableMethods]);
+    setShippingMethod(recommendedShippingMethod);
+  }, [recommendedShippingMethod]);
 
   const shippingCost = getShippingCost(shippingMethod, {
     pickupShippingCost,
@@ -144,41 +143,48 @@ export default function CheckoutPageClient() {
         <Card className="p-6 space-y-4">
           <h2 className="font-semibold text-lg">روش ارسال</h2>
           <div className="space-y-3">
-            {availableMethods.map((method) => (
-              <label
-                key={method}
-                className={`flex items-start gap-3 rounded-2xl border p-4 cursor-pointer transition-colors ${
-                  shippingMethod === method
-                    ? "border-primary bg-primary/5"
-                    : "border-border"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="shippingMethod"
-                  checked={shippingMethod === method}
-                  onChange={() => setShippingMethod(method)}
-                  className="mt-1"
-                />
-                <div className="flex-1">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="font-semibold">
-                      {getShippingMethodLabel(method)}
-                    </span>
-                    <span className="text-sm text-primary">
-                      {method === ShippingMethod.TIPAX
-                        ? "پس‌کرایه"
-                        : `${formatPrice(shippingCost)} (${pickupShippingCost ? `هزینه پیک: ${formatPrice(pickupShippingCost)}` : "هزینه پیک"})`}
-                    </span>
+            {[ShippingMethod.PICKUP, ShippingMethod.TIPAX].map((method) => {
+              const isRecommended = recommendedShippingMethod === method;
+              return (
+                <label
+                  key={method}
+                  className={`flex items-start gap-3 rounded-2xl border p-4 transition-colors ${
+                    isRecommended
+                      ? "border-primary bg-primary/5"
+                      : "border-border"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="shippingMethod"
+                    checked={shippingMethod === method}
+                    onChange={() => setShippingMethod(method)}
+                    className="mt-1"
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="font-semibold">
+                        {getShippingMethodLabel(method)}
+                      </span>
+                      <span className="text-sm text-primary">
+                        {method === ShippingMethod.TIPAX
+                          ? "پس‌کرایه"
+                          : `${formatPrice(shippingCost)} (${pickupShippingCost ? `هزینه پیک: ${formatPrice(pickupShippingCost)}` : "هزینه پیک"})`}
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted mt-1">
+                      {method === ShippingMethod.PICKUP
+                        ? isRecommended
+                          ? "این روش برای آدرس شما در شهر قم به‌صورت پیش‌فرض فعال شده است."
+                          : "پیک برای ارسال در شهر قم در دسترس است."
+                        : isRecommended
+                          ? "این روش برای آدرس شما به‌صورت پیش‌فرض فعال شده است."
+                          : "تیپاکس برای سفارش‌های خارج از شهر قم در دسترس است."}
+                    </p>
                   </div>
-                  <p className="text-sm text-muted mt-1">
-                    {method === ShippingMethod.PICKUP
-                      ? "ارسال با پیک برای این آدرس در شهر قم انجام می‌شود."
-                      : "هزینه ارسال توسط تیپاکس هنگام تحویل کالا از گیرنده دریافت می‌شود."}
-                  </p>
-                </div>
-              </label>
-            ))}
+                </label>
+              );
+            })}
           </div>
         </Card>
 

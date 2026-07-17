@@ -8,11 +8,7 @@ import {
   getSettings,
 } from "@/lib/data";
 import { generateId } from "@/utils/helpers";
-import {
-  getAvailableShippingMethods,
-  getShippingCost,
-  ShippingMethod,
-} from "@/lib/shipping";
+import { getShippingCost, isQomAddress, ShippingMethod } from "@/lib/shipping";
 import { apiSuccess, apiError } from "@/utils/api";
 import {
   getZibalGatewayUrl,
@@ -88,10 +84,12 @@ export async function POST(request: Request) {
     );
 
     const settings = await getSettings();
-    const availableMethods = getAvailableShippingMethods(province, city);
-    const resolvedShippingMethod = shippingMethod && availableMethods.includes(shippingMethod)
+    const recommendedShippingMethod = isQomAddress(province, city)
+      ? ShippingMethod.PICKUP
+      : ShippingMethod.TIPAX;
+    const resolvedShippingMethod = shippingMethod === recommendedShippingMethod
       ? shippingMethod
-      : availableMethods[0] || ShippingMethod.TIPAX;
+      : recommendedShippingMethod;
     const shippingCost = getShippingCost(resolvedShippingMethod, settings);
     const total = subtotal + shippingCost;
     const merchant =
