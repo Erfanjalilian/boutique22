@@ -139,7 +139,7 @@ export function ProductDetailClient({
                 src={product.images[selectedImage] || "/Image/placeholder-product.svg"}
                 alt={product.name}
                 fill
-                className="object-contain"
+                className="object-cover"
                 priority
               />
             </div>
