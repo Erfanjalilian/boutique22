@@ -45,8 +45,19 @@ export default async function AdminOrderDetailPage({
           <p><strong>{order.fullName}</strong></p>
           <p className="text-muted">{order.address}</p>
           <p className="text-muted">{order.postalCode} · {order.phone}</p>
-          {order.notes && <p className="text-muted">توضیحات: {order.notes}</p>}
-        </div>
+          {order.notes && <p className="text-muted">توضیحات: {order.notes}</p>}          {order.paymentTrackId && (
+            <p className="text-muted">
+              شناسه پیگیری پرداخت: <span className="font-mono">{order.paymentTrackId}</span>
+            </p>
+          )}
+          {order.paymentReferenceNumber && (
+            <p className="text-muted">
+              شماره مرجع پرداخت: <span className="font-mono">{order.paymentReferenceNumber}</span>
+            </p>
+          )}
+          {order.paymentVerifiedAt && (
+            <p className="text-muted">تاریخ تأیید پرداخت: {formatDate(order.paymentVerifiedAt)}</p>
+          )}        </div>
       </Card>
     </div>
   );

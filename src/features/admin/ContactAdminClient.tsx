@@ -39,10 +39,33 @@ export function ContactAdminClient({
           <Input label="تلفن" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
           <Input label="ایمیل" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
           <Input label="آدرس" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} />
-          <Input label="لینک اینستاگرام" value={form.socialMedia.instagram || ""} onChange={(e) => setForm({ ...form, socialMedia: { ...form.socialMedia, instagram: e.target.value } })} />
-          <Input label="لینک توییتر" value={form.socialMedia.twitter || ""} onChange={(e) => setForm({ ...form, socialMedia: { ...form.socialMedia, twitter: e.target.value } })} />
-          <Input label="لینک فیسبوک" value={form.socialMedia.facebook || ""} onChange={(e) => setForm({ ...form, socialMedia: { ...form.socialMedia, facebook: e.target.value } })} />
-          <Input label="لینک تلگرام" value={form.socialMedia.telegram || ""} onChange={(e) => setForm({ ...form, socialMedia: { ...form.socialMedia, telegram: e.target.value } })} />
+          <Input
+            label="لینک کانال ایتا"
+            value={form.socialMedia.eitaaChannel || ""}
+            onChange={(e) => setForm({
+              ...form,
+              socialMedia: { ...form.socialMedia, eitaaChannel: e.target.value },
+            })}
+          />
+          <Input
+            label="آیدی پی‌وی ایتا"
+            placeholder="مثلاً @admin یا admin"
+            value={form.socialMedia.eitaaPv || ""}
+            onChange={(e) => setForm({
+              ...form,
+              socialMedia: { ...form.socialMedia, eitaaPv: e.target.value },
+            })}
+          />
+          <Input
+            label="لینک فیسبوک"
+            value={form.socialMedia.facebook || ""}
+            onChange={(e) => setForm({ ...form, socialMedia: { ...form.socialMedia, facebook: e.target.value } })}
+          />
+          <Input
+            label="لینک تلگرام"
+            value={form.socialMedia.telegram || ""}
+            onChange={(e) => setForm({ ...form, socialMedia: { ...form.socialMedia, telegram: e.target.value } })}
+          />
           {message && <p className="text-sm text-green-400">{message}</p>}
           <Button type="submit" loading={loading}>ذخیره تغییرات</Button>
         </form>

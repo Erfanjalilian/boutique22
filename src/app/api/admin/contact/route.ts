@@ -8,8 +8,8 @@ const contactSchema = z.object({
   address: z.string().optional(),
   socialMedia: z
     .object({
-      instagram: z.string().optional(),
-      twitter: z.string().optional(),
+      eitaaChannel: z.string().optional(),
+      eitaaPv: z.string().optional(),
       facebook: z.string().optional(),
       telegram: z.string().optional(),
     })

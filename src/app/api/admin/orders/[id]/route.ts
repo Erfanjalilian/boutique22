@@ -6,9 +6,11 @@ const statusSchema = z.object({
   status: z.enum([
     "Pending",
     "Processing",
+    "Paid",
     "Shipped",
     "Delivered",
     "Cancelled",
+    "Failed",
   ]),
 });
 

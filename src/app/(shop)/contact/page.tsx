@@ -1,12 +1,28 @@
 import { getContact } from "@/lib/data";
 import { Card } from "@/components/ui/Card";
 
+function buildEitaaUrl(rawValue: string | undefined, isChannel: boolean) {
+  if (!rawValue) return "";
+  const normalized = rawValue.trim();
+  if (normalized.startsWith("http")) return normalized;
+  const id = normalized.replace(/^@/, "");
+  return `https://eitaa.com/${id}`;
+}
+
 export default async function ContactPage() {
   const contact = await getContact();
 
   const socialLinks = [
-    { key: "instagram", label: "اینستاگرام", url: contact.socialMedia.instagram },
-    { key: "twitter", label: "توییتر", url: contact.socialMedia.twitter },
+    {
+      key: "eitaaChannel",
+      label: "کانال ایتا",
+      url: buildEitaaUrl(contact.socialMedia.eitaaChannel, true),
+    },
+    {
+      key: "eitaaPv",
+      label: "پی وی ایتا",
+      url: buildEitaaUrl(contact.socialMedia.eitaaPv, false),
+    },
     { key: "facebook", label: "فیسبوک", url: contact.socialMedia.facebook },
     { key: "telegram", label: "تلگرام", url: contact.socialMedia.telegram },
   ].filter((s) => s.url);

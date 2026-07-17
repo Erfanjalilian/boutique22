@@ -131,8 +131,8 @@ export interface ContactInfo {
   email: string;
   address: string;
   socialMedia: {
-    instagram?: string;
-    twitter?: string;
+    eitaaChannel?: string;
+    eitaaPv?: string;
     facebook?: string;
     telegram?: string;
   };
