@@ -4,10 +4,6 @@ import { apiSuccess, apiError } from "@/utils/api";
 
 const aboutSchema = z.object({
   description: z.string().optional(),
-  story: z.string().optional(),
-  mission: z.string().optional(),
-  vision: z.string().optional(),
-  additionalContent: z.string().optional(),
 });
 
 export async function GET() {

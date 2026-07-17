@@ -31,28 +31,17 @@ export function AboutAdminClient({
     setMessage(data.success ? "صفحه درباره ما به‌روزرسانی شد!" : data.error);
   }
 
-  const fields = [
-    { key: "description" as const, label: "توضیحات شرکت" },
-    { key: "story" as const, label: "داستان شرکت" },
-    { key: "mission" as const, label: "مأموریت" },
-    { key: "vision" as const, label: "چشم‌انداز" },
-    { key: "additionalContent" as const, label: "محتوای تکمیلی" },
-  ];
-
   return (
     <div className="animate-fade-in max-w-2xl">
       <h1 className="text-2xl font-bold mb-6">مدیریت درباره ما</h1>
       <Card className="p-6">
         <form onSubmit={handleSubmit} className="space-y-4">
-          {fields.map((field) => (
-            <Textarea
-              key={field.key}
-              label={field.label}
-              rows={4}
-              value={form[field.key]}
-              onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
-            />
-          ))}
+          <Textarea
+            label="متن درباره ما"
+            rows={8}
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+          />
           {message && <p className="text-sm text-green-400">{message}</p>}
           <Button type="submit" loading={loading}>ذخیره تغییرات</Button>
         </form>

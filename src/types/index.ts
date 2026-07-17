@@ -138,10 +138,6 @@ export interface ContactInfo {
 
 export interface AboutInfo {
   description: string;
-  story: string;
-  mission: string;
-  vision: string;
-  additionalContent: string;
 }
 
 export interface SiteSettings {

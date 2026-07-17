@@ -164,10 +164,6 @@ export async function saveSettings(settings: SiteSettings): Promise<void> {
 export async function getAbout(): Promise<AboutInfo> {
   return readJsonObject<AboutInfo>("about.json", {
     description: "",
-    story: "",
-    mission: "",
-    vision: "",
-    additionalContent: "",
   });
 }
 
