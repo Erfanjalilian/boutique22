@@ -155,6 +155,8 @@ export async function getSettings(): Promise<SiteSettings> {
     footerText: "",
     footerLinks: [],
     pickupShippingCost: 30000,
+    posteTajazziBaseCost: 100000,
+    posteTajazziRatePerKg: 50000,
   });
 }
 

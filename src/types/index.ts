@@ -117,7 +117,7 @@ export interface Order {
   postalCode: string;
   province: string;
   city: string;
-  shippingMethod: "pickup" | "tipax";
+  shippingMethod: "pickup" | "tipax" | "poste_tajazzi";
   shippingCost: number;
   notes: string;
   paymentTrackId?: string;
@@ -157,6 +157,8 @@ export interface SiteSettings {
   zibalMerchant?: string;
   shippingRatePerKg?: number;
   pickupShippingCost?: number;
+  posteTajazziBaseCost?: number;
+  posteTajazziRatePerKg?: number;
 }
 
 export interface SiteBanner {

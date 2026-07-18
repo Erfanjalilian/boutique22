@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { formatPrice } from "@/utils/helpers";
 import {
+  getAvailableShippingMethods,
   getShippingCost,
   getShippingMethodLabel,
   isQomAddress,
@@ -21,7 +22,11 @@ export default function CheckoutPageClient() {
   const { items, totalPrice, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [pickupShippingCost, setPickupShippingCost] = useState<number | undefined>(undefined);
+  const [settings, setSettings] = useState<{
+    pickupShippingCost?: number;
+    posteTajazziBaseCost?: number;
+    posteTajazziRatePerKg?: number;
+  }>({});
   const [shippingMethod, setShippingMethod] = useState<ShippingMethodValue>(ShippingMethod.TIPAX);
   const [form, setForm] = useState({
     fullName: "",
@@ -37,24 +42,32 @@ export default function CheckoutPageClient() {
     fetch("/api/settings")
       .then((res) => res.json())
       .then((data) => {
-        if (data?.success && typeof data.data?.pickupShippingCost === "number") {
-          setPickupShippingCost(data.data.pickupShippingCost);
+        if (data?.success) {
+          setSettings({
+            pickupShippingCost: data.data.pickupShippingCost,
+            posteTajazziBaseCost: data.data.posteTajazziBaseCost,
+            posteTajazziRatePerKg: data.data.posteTajazziRatePerKg,
+          });
         }
       })
       .catch(() => {});
   }, []);
 
-  const recommendedShippingMethod = isQomAddress(form.province, form.city)
+  const isQom = isQomAddress(form.province, form.city);
+  const availableMethods = getAvailableShippingMethods(form.province, form.city);
+  const recommendedShippingMethod = isQom
     ? ShippingMethod.PICKUP
     : ShippingMethod.TIPAX;
 
   useEffect(() => {
-    setShippingMethod(recommendedShippingMethod);
-  }, [recommendedShippingMethod]);
+    if (availableMethods.length > 0 && !availableMethods.includes(shippingMethod)) {
+      setShippingMethod(recommendedShippingMethod);
+    }
+  }, [availableMethods, recommendedShippingMethod, shippingMethod]);
 
-  const shippingCost = getShippingCost(shippingMethod, {
-    pickupShippingCost,
-  });
+  const totalWeightGrams = items.reduce((sum, i) => sum + ((i.weight || 0) * i.quantity), 0);
+  const totalWeightKg = totalWeightGrams / 1000;
+  const shippingCost = getShippingCost(shippingMethod, settings, totalWeightKg);
   const finalTotal = totalPrice + shippingCost;
 
   async function handleSubmit(e: React.FormEvent) {
@@ -89,6 +102,35 @@ export default function CheckoutPageClient() {
   }
 
   if (items.length === 0) return null;
+
+  function getShippingCostDisplay(method: ShippingMethodValue): string {
+    if (method === ShippingMethod.TIPAX) return "پس‌کرایه";
+    const cost = getShippingCost(method, settings, totalWeightKg);
+    const label = getShippingMethodLabel(method);
+    return `${formatPrice(cost)} (${label})`;
+  }
+
+  function getShippingDescription(method: ShippingMethodValue): string {
+    if (method === ShippingMethod.PICKUP) {
+      if (recommendedShippingMethod === method) {
+        return "این روش برای آدرس شما در شهر قم به‌صورت پیش‌فرض فعال شده است.";
+      }
+      return "پیک برای ارسال در شهر قم در دسترس است.";
+    }
+
+    if (method === ShippingMethod.TIPAX) {
+      if (recommendedShippingMethod === method) {
+        return "این روش برای آدرس شما به‌صورت پیش‌فرض فعال شده است.";
+      }
+      return "تیپاکس برای سفارش‌های خارج از شهر قم در دسترس است.";
+    }
+
+    if (method === ShippingMethod.POSTE_TAJAZZY) {
+      return "پست پیشتاز برای تمام مناطق در دسترس است.";
+    }
+
+    return "";
+  }
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -143,7 +185,7 @@ export default function CheckoutPageClient() {
         <Card className="p-6 space-y-4">
           <h2 className="font-semibold text-lg">روش ارسال</h2>
           <div className="space-y-3">
-            {[ShippingMethod.PICKUP, ShippingMethod.TIPAX].map((method) => {
+            {availableMethods.map((method) => {
               const isRecommended = recommendedShippingMethod === method;
               return (
                 <label
@@ -167,19 +209,11 @@ export default function CheckoutPageClient() {
                         {getShippingMethodLabel(method)}
                       </span>
                       <span className="text-sm text-primary">
-                        {method === ShippingMethod.TIPAX
-                          ? "پس‌کرایه"
-                          : `${formatPrice(shippingCost)} (${pickupShippingCost ? `هزینه پیک: ${formatPrice(pickupShippingCost)}` : "هزینه پیک"})`}
+                        {getShippingCostDisplay(method)}
                       </span>
                     </div>
                     <p className="text-sm text-muted mt-1">
-                      {method === ShippingMethod.PICKUP
-                        ? isRecommended
-                          ? "این روش برای آدرس شما در شهر قم به‌صورت پیش‌فرض فعال شده است."
-                          : "پیک برای ارسال در شهر قم در دسترس است."
-                        : isRecommended
-                          ? "این روش برای آدرس شما به‌صورت پیش‌فرض فعال شده است."
-                          : "تیپاکس برای سفارش‌های خارج از شهر قم در دسترس است."}
+                      {getShippingDescription(method)}
                     </p>
                   </div>
                 </label>

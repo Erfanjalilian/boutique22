@@ -11,6 +11,7 @@ import type { Order, OrderStatus } from "@/types";
 function getShippingMethodLabel(method?: Order["shippingMethod"]) {
   if (method === "pickup") return "پیک";
   if (method === "tipax") return "تیپاکس";
+  if (method === "poste_tajazzi") return "پست پیشتاز";
   return "—";
 }
 
@@ -88,9 +89,9 @@ export function OrdersAdminClient({
                   <p className="text-muted mt-2">
                     روش ارسال: <span className="font-medium text-foreground">{getShippingMethodLabel(order.shippingMethod)}</span>
                   </p>
-                  {order.shippingMethod === "pickup" && (
+                  {order.shippingMethod !== "tipax" && (
                     <p className="text-muted">
-                      هزینه پیک: <span className="font-medium text-foreground">{formatPrice(order.shippingCost)}</span>
+                      هزینه ارسال: <span className="font-medium text-foreground">{formatPrice(order.shippingCost)}</span>
                     </p>
                   )}
                   {order.notes && <p className="text-muted mt-2">توضیحات: {order.notes}</p>}

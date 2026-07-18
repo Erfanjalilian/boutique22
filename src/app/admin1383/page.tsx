@@ -1,4 +1,4 @@
-import { getDashboardStats } from "@/lib/data";
+import { getDashboardStats } from "@/lib/repositories";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { formatPrice, formatDate } from "@/utils/helpers";

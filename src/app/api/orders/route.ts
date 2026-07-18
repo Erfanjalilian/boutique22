@@ -8,7 +8,7 @@ import {
   getSettings,
 } from "@/lib/data";
 import { generateId } from "@/utils/helpers";
-import { getShippingCost, isQomAddress, ShippingMethod } from "@/lib/shipping";
+import { getShippingCost, getAvailableShippingMethods, isQomAddress, ShippingMethod } from "@/lib/shipping";
 import { apiSuccess, apiError } from "@/utils/api";
 import {
   getZibalGatewayUrl,
@@ -36,7 +36,7 @@ const createOrderSchema = z.object({
   province: z.string().min(2).optional().default(""),
   city: z.string().min(2).optional().default(""),
   shippingMethod: z
-    .enum([ShippingMethod.PICKUP, ShippingMethod.TIPAX])
+    .enum([ShippingMethod.PICKUP, ShippingMethod.TIPAX, ShippingMethod.POSTE_TAJAZZY])
     .optional(),
   notes: z.string().optional(),
 });
@@ -84,13 +84,20 @@ export async function POST(request: Request) {
     );
 
     const settings = await getSettings();
-    const recommendedShippingMethod = isQomAddress(province, city)
-      ? ShippingMethod.PICKUP
-      : ShippingMethod.TIPAX;
-    const resolvedShippingMethod = shippingMethod === recommendedShippingMethod
-      ? shippingMethod
-      : recommendedShippingMethod;
-    const shippingCost = getShippingCost(resolvedShippingMethod, settings);
+    const availableMethods = getAvailableShippingMethods(province, city);
+    const resolvedShippingMethod =
+      shippingMethod && availableMethods.includes(shippingMethod)
+        ? shippingMethod
+        : isQomAddress(province, city)
+          ? ShippingMethod.PICKUP
+          : ShippingMethod.TIPAX;
+
+    const totalWeightGrams = items.reduce(
+      (sum, item) => sum + ((item as any).weight || 0) * item.quantity,
+      0
+    );
+    const totalWeightKg = totalWeightGrams / 1000;
+    const shippingCost = getShippingCost(resolvedShippingMethod, settings, totalWeightKg);
     const total = subtotal + shippingCost;
     const merchant =
       process.env.ZIBAL_MERCHANT?.trim() || settings.zibalMerchant?.trim();

@@ -99,6 +99,18 @@ export function SettingsAdminClient({
             value={form.pickupShippingCost ?? ""}
             onChange={(e) => setForm({ ...form, pickupShippingCost: Number(e.target.value) })}
           />
+          <Input
+            label="هزینه پایه پست پیشتاز (تومان)"
+            type="number"
+            value={form.posteTajazziBaseCost ?? ""}
+            onChange={(e) => setForm({ ...form, posteTajazziBaseCost: Number(e.target.value) })}
+          />
+          <Input
+            label="هزینه پست پیشتاز به ازای هر کیلوگرم اضافه (تومان)"
+            type="number"
+            value={form.posteTajazziRatePerKg ?? ""}
+            onChange={(e) => setForm({ ...form, posteTajazziRatePerKg: Number(e.target.value) })}
+          />
         </Card>
 
         {message && <p className="text-sm text-green-400">{message}</p>}
