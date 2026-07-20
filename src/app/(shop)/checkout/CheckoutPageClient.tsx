@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/hooks/useCart";
 import { Input } from "@/components/ui/Input";
+import { Autocomplete } from "@/components/ui/Autocomplete";
+import { IRAN_PROVINCES } from "@/lib/iran-provinces";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -150,11 +152,13 @@ export default function CheckoutPageClient() {
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
           />
-          <Input
+          <Autocomplete
             label="استان"
             required
             value={form.province}
-            onChange={(e) => setForm({ ...form, province: e.target.value })}
+            onChange={(value) => setForm({ ...form, province: value })}
+            options={IRAN_PROVINCES}
+            placeholder="استان خود را انتخاب کنید یا تایپ کنید..."
           />
           <Input
             label="شهر"
