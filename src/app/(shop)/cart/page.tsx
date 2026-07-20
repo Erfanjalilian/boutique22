@@ -9,7 +9,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { formatPrice } from "@/utils/helpers";
 
 export default function CartPage() {
-  const { items, updateQuantity, removeItem, totalPrice, shippingCost, totalWithShipping } = useCart();
+  const { items, updateQuantity, removeItem, totalPrice } = useCart();
 
   if (items.length === 0) {
     return (
@@ -87,13 +87,9 @@ export default function CartPage() {
               <span>جمع جزء</span>
               <span>{formatPrice(totalPrice)}</span>
             </div>
-            <div className="flex justify-between text-muted">
-              <span>هزینه ارسال</span>
-              <span>{formatPrice(shippingCost)}</span>
-            </div>
             <div className="border-t border-border pt-3 flex justify-between font-semibold text-lg">
               <span>مجموع</span>
-              <span className="text-primary">{formatPrice(totalWithShipping)}</span>
+              <span className="text-primary">{formatPrice(totalPrice)}</span>
             </div>
           </div>
           <Link href="/checkout" className="block mt-6">
