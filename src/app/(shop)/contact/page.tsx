@@ -20,7 +20,7 @@ export default async function ContactPage() {
     },
     {
       key: "eitaaPv",
-      label: "پی وی ایتا",
+      label: "پشتیبانی ایتا",
       url: buildEitaaUrl(contact.socialMedia.eitaaPv, false),
     },
   ].filter((s) => s.url);
