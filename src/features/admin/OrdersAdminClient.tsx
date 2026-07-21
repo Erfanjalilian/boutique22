@@ -1,140 +1,143 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
 import { Card } from "@/components/ui/Card";
-import { Select } from "@/components/ui/Select";
-import { formatPrice, formatDate } from "@/utils/helpers";
-import { orderStatusLabels } from "@/utils/labels";
-import type { Order, OrderStatus } from "@/types";
+import { Badge } from "@/components/ui/Badge";
+import type { Order } from "@/types";
 
-function getShippingMethodLabel(method?: Order["shippingMethod"]) {
-  if (method === "pickup") return "پیک";
-  if (method === "tipax") return "تیپاکس";
-  if (method === "poste_tajazzi") return "پست پیشتاز";
-  return "—";
+function formatPrice(price: number) {
+  return price.toLocaleString("fa-IR") + " تومان";
 }
 
-const statuses: OrderStatus[] = [
-  "Pending",
-  "Processing",
-  "Paid",
-  "Shipped",
-  "Delivered",
-  "Cancelled",
-  "Failed",
-];
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString("fa-IR", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
-export function OrdersAdminClient({
-  initialOrders,
-}: {
-  initialOrders: Order[];
-}) {
-  const [orders, setOrders] = useState(initialOrders);
+function OrderItems({ items }: { items: Order["items"] }) {
+  return (
+    <div className="space-y-2">
+      {items.map((item, i) => (
+        <div key={i} className="flex items-center gap-3 text-sm">
+          <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-background">
+            <img
+              src={item.image}
+              alt={item.name}
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-medium truncate">{item.name}</p>
+            <p className="text-xs text-muted">
+              {item.quantity} عدد × {formatPrice(item.price)}
+              {item.size && ` — سایز ${item.size}`}
+              {item.color && ` — ${item.color}`}
+            </p>
+          </div>
+          <p className="shrink-0 font-medium">{formatPrice(item.price * item.quantity)}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
 
-  async function updateStatus(id: string, status: OrderStatus) {
-    const res = await fetch(`/api/admin/orders/${id}`, {
-      method: "PUT",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status }),
-    });
-    const data = await res.json();
-    if (data.success) {
-      setOrders(orders.map((o) => (o.id === id ? data.data : o)));
-    }
+function ShippingMethodLabel({ method }: { method: string }) {
+  const labels: Record<string, string> = {
+    pickup: "تحویل حضوری",
+    tipax: "تیپاکس",
+    poste_tajazzi: "پست تجزی",
+  };
+  return <span>{labels[method] || method}</span>;
+}
+
+export function OrdersAdminClient({ orders }: { orders: Order[] }) {
+  if (orders.length === 0) {
+    return (
+      <div className="animate-fade-in">
+        <h1 className="text-2xl font-bold mb-6">مدیریت سفارش‌ها</h1>
+        <Card className="p-8 text-center">
+          <p className="text-lg font-medium">هیچ سفارشی ثبت نشده است.</p>
+        </Card>
+      </div>
+    );
   }
 
   return (
     <div className="animate-fade-in">
       <h1 className="text-2xl font-bold mb-6">مدیریت سفارش‌ها</h1>
+      <p className="text-sm text-muted mb-4">{orders.length} سفارش</p>
 
-      {orders.length === 0 ? (
-        <Card className="p-8 text-center">
-          <p className="text-lg font-medium">هنوز سفارشی ثبت نشده است.</p>
-        </Card>
-      ) : (
-        <div className="space-y-4">
-          {orders.map((order) => (
-            <Card key={order.id} className="p-5 space-y-4">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="font-medium">{order.fullName}</p>
-                  <p className="text-sm text-muted">
-                    #{order.id.slice(0, 8)} · {formatDate(order.createdAt)} · {order.items.length.toLocaleString("fa-IR")} قلم
-                  </p>
+      <div className="space-y-4">
+        {orders.map((order) => (
+          <Card key={order.id} className="p-4 md:p-6">
+            {/* Header */}
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4 pb-4 border-b border-border/50">
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold">{order.id}</span>
+                  <Badge status={order.status} />
                 </div>
-
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="w-44">
-                    <Select
-                      value={order.status}
-                      onChange={(e) => updateStatus(order.id, e.target.value as OrderStatus)}
-                      options={statuses.map((s) => ({ value: s, label: orderStatusLabels[s] }))}
-                    />
-                  </div>
-                  <p className="text-lg font-semibold text-primary">{formatPrice(order.total)}</p>
-                  <Link href={`/admin/orders/${order.id}`} className="text-sm text-primary hover:underline">
-                    جزئیات
-                  </Link>
-                </div>
+                <p className="text-xs text-muted">{formatDate(order.createdAt)}</p>
               </div>
+              <p className="text-lg font-bold text-primary">{formatPrice(order.total)}</p>
+            </div>
 
-              <div className="grid gap-3 lg:grid-cols-2">
-                <div className="rounded-3xl border border-border/50 bg-background/60 p-4 text-sm">
-                  <p className="text-muted text-xs uppercase tracking-[0.2em] mb-2">آدرس و تماس</p>
-                  <p>{order.address}</p>
-                  <p className="text-muted">کد پستی: {order.postalCode}</p>
-                  <p className="mt-2">تلفن: {order.phone}</p>
-                  <p className="text-muted mt-2">
-                    روش ارسال: <span className="font-medium text-foreground">{getShippingMethodLabel(order.shippingMethod)}</span>
-                  </p>
-                  {order.shippingMethod !== "tipax" && (
-                    <p className="text-muted">
-                      هزینه ارسال: <span className="font-medium text-foreground">{formatPrice(order.shippingCost)}</span>
-                    </p>
-                  )}
-                  {order.notes && <p className="text-muted mt-2">توضیحات: {order.notes}</p>}
-                </div>
-
-                <div className="rounded-3xl border border-border/50 bg-background/60 p-4 text-sm">
-                  <p className="text-muted text-xs uppercase tracking-[0.2em] mb-2">محصولات</p>
-                  <div className="space-y-2">
-                    {order.items.map((item, index) => (
-                      <div key={`${order.id}-${index}`} className="flex flex-col gap-1 border-b border-border/20 pb-2 last:border-b-0 last:pb-0">
-                        <p className="font-medium">{item.name}</p>
-                        <p className="text-muted text-xs">
-                          {item.quantity} × {formatPrice(item.price)}
-                          {(item.size || item.color) && ` · ${[item.size, item.color].filter(Boolean).join("، ")}`}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+            {/* Customer Info */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+              <div>
+                <p className="text-xs text-muted mb-0.5">نام مشتری</p>
+                <p className="text-sm font-medium">{order.fullName}</p>
               </div>
+              <div>
+                <p className="text-xs text-muted mb-0.5">شماره تماس</p>
+                <p className="text-sm font-medium" dir="ltr">{order.phone}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted mb-0.5">روش ارسال</p>
+                <p className="text-sm font-medium">
+                  <ShippingMethodLabel method={order.shippingMethod} />
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-muted mb-0.5">هزینه ارسال</p>
+                <p className="text-sm font-medium">{formatPrice(order.shippingCost)}</p>
+              </div>
+            </div>
 
-              {(order.paymentTrackId || order.paymentReferenceNumber || order.paymentVerifiedAt) && (
-                <div className="rounded-3xl border border-border/50 bg-background/60 p-4 text-sm space-y-1">
-                  <p className="text-muted text-xs uppercase tracking-[0.2em] mb-2">کد رهگیری پرداخت</p>
-                  {order.paymentTrackId && (
-                    <p>
-                      شناسه پیگیری: <span className="font-mono">{order.paymentTrackId}</span>
-                    </p>
-                  )}
-                  {order.paymentReferenceNumber && (
-                    <p>
-                      شماره مرجع: <span className="font-mono">{order.paymentReferenceNumber}</span>
-                    </p>
-                  )}
-                  {order.paymentVerifiedAt && (
-                    <p>تاریخ تأیید: {formatDate(order.paymentVerifiedAt)}</p>
-                  )}
-                </div>
-              )}
-            </Card>
-          ))}
-        </div>
-      )}
+            {/* Address */}
+            <div className="mb-4">
+              <p className="text-xs text-muted mb-0.5">آدرس</p>
+              <p className="text-sm">
+                {order.province && order.city ? `${order.province}، ${order.city}، ` : ""}
+                {order.address}
+                {order.postalCode && (
+                  <span dir="ltr" className="text-xs text-muted block mt-0.5">
+                    کد پستی: {order.postalCode}
+                  </span>
+                )}
+              </p>
+            </div>
+
+            {/* Notes */}
+            {order.notes && (
+              <div className="mb-4">
+                <p className="text-xs text-muted mb-0.5">توضیحات</p>
+                <p className="text-sm">{order.notes}</p>
+              </div>
+            )}
+
+            {/* Items */}
+            <div>
+              <p className="text-xs text-muted mb-2">محصولات سفارش</p>
+              <OrderItems items={order.items} />
+            </div>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 }
