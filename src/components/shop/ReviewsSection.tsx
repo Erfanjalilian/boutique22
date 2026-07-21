@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { ReviewCard } from "./ReviewCard";
 import type { Review } from "@/types";
 
@@ -9,33 +9,30 @@ export function ReviewsSection({
 }: {
   reviews: Review[];
 }) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const checkScroll = () => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 0);
-    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 1);
-  };
+  const goTo = useCallback(
+    (index: number) => {
+      if (index < 0) setCurrentIndex(reviews.length - 1);
+      else if (index >= reviews.length) setCurrentIndex(0);
+      else setCurrentIndex(index);
+    },
+    [reviews.length]
+  );
 
+  const goNext = useCallback(() => goTo(currentIndex + 1), [goTo, currentIndex]);
+  const goPrev = useCallback(() => goTo(currentIndex - 1), [goTo, currentIndex]);
+
+  // Auto-play every 5 seconds
   useEffect(() => {
-    checkScroll();
-    const el = scrollRef.current;
-    if (!el) return;
-    el.addEventListener("scroll", checkScroll);
-    return () => el.removeEventListener("scroll", checkScroll);
-  }, [reviews]);
-
-  const scroll = (direction: "left" | "right") => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const amount = 400;
-    el.scrollBy({ left: direction === "left" ? -amount : amount, behavior: "smooth" });
-  };
+    if (reviews.length <= 1) return;
+    const timer = setInterval(goNext, 5000);
+    return () => clearInterval(timer);
+  }, [goNext, reviews.length]);
 
   if (reviews.length === 0) return null;
+
+  const currentReview = reviews[currentIndex];
 
   return (
     <section className="bg-blue-600 py-16">
@@ -49,47 +46,55 @@ export function ReviewsSection({
           </p>
         </div>
 
-        <div className="relative">
+        <div className="relative flex items-center justify-center gap-4">
           {/* Left Arrow */}
-          {canScrollLeft && (
-            <button
-              onClick={() => scroll("left")}
-              className="absolute right-full top-1/2 -translate-y-1/2 ml-4 z-10 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
-              aria-label="قبلی"
+          <button
+            onClick={goPrev}
+            className="shrink-0 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
+            aria-label="قبلی"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          {/* Current Review Card */}
+          <div className="flex-1 max-w-2xl mx-auto overflow-hidden">
+            <div
+              key={currentReview.id}
+              className="transition-opacity duration-500 ease-in-out"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-          )}
+              <ReviewCard review={currentReview} />
+            </div>
+          </div>
 
           {/* Right Arrow */}
-          {canScrollRight && (
-            <button
-              onClick={() => scroll("right")}
-              className="absolute left-full top-1/2 -translate-y-1/2 mr-4 z-10 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
-              aria-label="بعدی"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          )}
-
-          {/* Scrollable Cards */}
-          <div
-            ref={scrollRef}
-            className="flex overflow-x-auto gap-6 snap-x snap-mandatory scroll-smooth pb-2"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          <button
+            onClick={goNext}
+            className="shrink-0 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
+            aria-label="بعدی"
           >
-            <style>{`#reviews-scrollbar::-webkit-scrollbar { display: none; }`}</style>
-            {reviews.map((review) => (
-              <div key={review.id} className="snap-start shrink-0">
-                <ReviewCard review={review} />
-              </div>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Dots Indicator */}
+        {reviews.length > 1 && (
+          <div className="flex justify-center gap-2 mt-8">
+            {reviews.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`w-2.5 h-2.5 rounded-full transition-colors ${
+                  index === currentIndex ? "bg-white" : "bg-white/40"
+                }`}
+                aria-label={`برو به نظر ${index + 1}`}
+              />
             ))}
           </div>
-        </div>
+        )}
       </div>
     </section>
   );
