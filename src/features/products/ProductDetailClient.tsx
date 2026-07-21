@@ -185,7 +185,7 @@ export function ProductDetailClient({
           <p className="text-3xl font-bold text-primary mb-6">
             {formatPrice(product.price)}
           </p>
-          <p className="text-muted leading-relaxed mb-8">{product.description}</p>
+          <p className="text-muted leading-relaxed mb-8 whitespace-pre-wrap">{product.description}</p>
 
           {/* Stock Status */}
           <div className="mb-4">
