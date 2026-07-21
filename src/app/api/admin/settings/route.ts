@@ -13,8 +13,9 @@ const settingsSchema = z.object({
     .array(z.object({ label: z.string(), href: z.string() }))
     .optional(),
   zibalMerchant: z.string().optional(),
-  shippingRatePerKg: z.number().min(0).optional(),
   pickupShippingCost: z.number().min(0).optional(),
+  posteTajazziBaseCost: z.number().min(0).optional(),
+  posteTajazziRatePerKg: z.number().min(0).optional(),
 });
 
 export async function GET() {

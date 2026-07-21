@@ -155,7 +155,6 @@ export interface SiteSettings {
   footerText: string;
   footerLinks: { label: string; href: string }[];
   zibalMerchant?: string;
-  shippingRatePerKg?: number;
   pickupShippingCost?: number;
   posteTajazziBaseCost?: number;
   posteTajazziRatePerKg?: number;

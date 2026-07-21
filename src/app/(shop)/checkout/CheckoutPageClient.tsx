@@ -196,7 +196,7 @@ export default function CheckoutPageClient() {
                   key={method}
                   className={`flex items-start gap-3 rounded-2xl border p-4 transition-colors ${
                     isRecommended
-                      ? "border-primary bg-primary/5"
+                      ? "border-primary"
                       : "border-border"
                   }`}
                 >
