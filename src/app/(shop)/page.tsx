@@ -2,15 +2,17 @@ import { HeroSection } from "@/components/shop/HeroSection";
 import { ProductGrid } from "@/components/shop/ProductGrid";
 import { ArticleGrid } from "@/components/shop/ArticleGrid";
 import { CategoryGrid } from "@/components/shop/CategoryGrid";
+import { ReviewsSection } from "@/components/shop/ReviewsSection";
 import { PromoBanner } from "@/components/shop/PromoBanner";
-import { getArticles, getProducts, getCategories, getBanners } from "@/lib/data";
+import { getArticles, getProducts, getCategories, getBanners, getReviews } from "@/lib/data";
 
 export default async function HomePage() {
-  const [products, categories, banners, articles] = await Promise.all([
+  const [products, categories, banners, articles, reviews] = await Promise.all([
     getProducts(),
     getCategories(),
     getBanners(),
     getArticles(),
+    getReviews(),
   ]);
 
   const featured = products.filter((p) => p.featured).slice(0, 4);
@@ -48,6 +50,8 @@ export default async function HomePage() {
       ) : (
         <PromoBanner />
       )}
+
+      <ReviewsSection reviews={reviews} />
       
       <ProductGrid
         products={newArrivals}

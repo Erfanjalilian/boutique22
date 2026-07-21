@@ -14,6 +14,7 @@ import type {
   SiteSettings,
   SiteBanner,
   OrderStatus,
+  Review,
 } from "@/types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -193,6 +194,14 @@ export async function getBanners(): Promise<SiteBanner[]> {
 
 export async function saveBanners(banners: SiteBanner[]): Promise<void> {
   await writeJson("banners.json", banners);
+}
+
+export async function getReviews(): Promise<Review[]> {
+  return readJson<Review[]>("reviews.json", []);
+}
+
+export async function saveReviews(reviews: Review[]): Promise<void> {
+  await writeJson("reviews.json", reviews);
 }
 
 export async function getDashboardStats() {

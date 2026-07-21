@@ -15,6 +15,7 @@ const links = [
   { href: "/admin/banners", label: "بنرها", icon: "🖼️" },
   { href: "/admin/contact", label: "تماس", icon: "📞" },
   { href: "/admin/about", label: "درباره ما", icon: "📝" },
+  { href: "/admin/reviews", label: "نظرات مشتریان", icon: "⭐" },
   { href: "/admin/settings", label: "تنظیمات", icon: "⚙️" },
 ];
 

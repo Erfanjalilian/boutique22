@@ -176,3 +176,10 @@ export interface SessionPayload {
   role: UserRole;
   phone: string;
 }
+
+export interface Review {
+  id: string;
+  fullName: string;
+  comment: string;
+  createdAt: string;
+}
