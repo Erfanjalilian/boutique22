@@ -21,6 +21,7 @@ export function Header({
     { href: "/", label: "خانه" },
     { href: "/products", label: "فروشگاه" },
     { href: "/articles", label: "مقالات" },
+    { href: "/customer-satisfaction", label: "رضایت مشتری" },
     { href: "/about", label: "درباره ما" },
     { href: "/contact", label: "تماس" },
   ];
