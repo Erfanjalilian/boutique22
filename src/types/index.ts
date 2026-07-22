@@ -181,13 +181,6 @@ export interface Review {
   fullName: string;
   comment: string;
   createdAt: string;
-}
-
-export interface CustomerVideo {
-  id: string;
-  title: string;
-  description: string;
-  videoUrl: string;
-  thumbnailUrl?: string;
-  createdAt: string;
+  mediaUrl?: string;
+  mediaType?: "image" | "video" | null;
 }

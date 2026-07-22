@@ -15,7 +15,6 @@ import type {
   SiteBanner,
   OrderStatus,
   Review,
-  CustomerVideo,
 } from "@/types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -203,14 +202,6 @@ export async function getReviews(): Promise<Review[]> {
 
 export async function saveReviews(reviews: Review[]): Promise<void> {
   await writeJson("reviews.json", reviews);
-}
-
-export async function getCustomerVideos(): Promise<CustomerVideo[]> {
-  return readJson<CustomerVideo[]>("videos.json", []);
-}
-
-export async function saveCustomerVideos(videos: CustomerVideo[]): Promise<void> {
-  await writeJson("videos.json", videos);
 }
 
 export async function getDashboardStats() {

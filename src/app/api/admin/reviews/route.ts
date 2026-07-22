@@ -6,6 +6,8 @@ import { apiSuccess, apiError } from "@/utils/api";
 const reviewSchema = z.object({
   fullName: z.string().min(1, "نام و نام خانوادگی الزامی است"),
   comment: z.string().min(1, "متن نظر الزامی است"),
+  mediaUrl: z.string().optional(),
+  mediaType: z.enum(["image", "video"]).optional().nullable(),
 });
 
 export async function GET() {
@@ -23,7 +25,10 @@ export async function POST(request: Request) {
     const review = {
       id: generateId(),
       createdAt: new Date().toISOString(),
-      ...parsed.data,
+      fullName: parsed.data.fullName,
+      comment: parsed.data.comment,
+      mediaUrl: parsed.data.mediaUrl || undefined,
+      mediaType: parsed.data.mediaType || null,
     };
     reviews.unshift(review);
     await saveReviews(reviews);
