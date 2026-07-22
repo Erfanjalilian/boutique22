@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { ReviewCard } from "./ReviewCard";
 import type { Review } from "@/types";
 
@@ -22,13 +22,6 @@ export function ReviewsSection({
 
   const goNext = useCallback(() => goTo(currentIndex + 1), [goTo, currentIndex]);
   const goPrev = useCallback(() => goTo(currentIndex - 1), [goTo, currentIndex]);
-
-  // Auto-play every 5 seconds
-  useEffect(() => {
-    if (reviews.length <= 1) return;
-    const timer = setInterval(goNext, 5000);
-    return () => clearInterval(timer);
-  }, [goNext, reviews.length]);
 
   if (reviews.length === 0) return null;
 
