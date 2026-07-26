@@ -52,10 +52,18 @@ const nextConfig: NextConfig = {
         hostname: "i.postimg.cc",
       },
        {
-                protocol: "https",
-                hostname: "i1.delgarm.com",
+                 protocol: "https",
+                 hostname: "i1.delgarm.com",
 
 
+      },
+      {
+        protocol: "https",
+        hostname: "ucarecdn.com",
+      },
+      {
+        protocol: "https",
+        hostname: "app.uploadcare.com",
       }
     ],
   },
