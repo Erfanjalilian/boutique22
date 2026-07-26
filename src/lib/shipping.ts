@@ -75,7 +75,7 @@ export function getShippingCost(
           ? settings.posteTajazziRatePerKg
           : DEFAULT_POSTE_TAJAZZY_RATE_PER_KG;
       const extraWeight = totalWeightKg - 1;
-      return baseCost + Math.ceil(extraWeight * ratePerKg);
+      return baseCost + Math.ceil(extraWeight) * ratePerKg;
     }
 
     return baseCost;
