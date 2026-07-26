@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
@@ -15,10 +15,10 @@ export function ReviewsAdminClient({
   const [reviews, setReviews] = useState(initialReviews);
   const [fullName, setFullName] = useState("");
   const [comment, setComment] = useState("");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [mediaUrl, setMediaUrl] = useState("");
+  const [mediaType, setMediaType] = useState<"image" | "video" | "">("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
@@ -26,37 +26,24 @@ export function ReviewsAdminClient({
     setLoading(true);
     setMessage("");
 
-    let mediaUrl: string | undefined;
-    let mediaType: "image" | "video" | null = null;
-
-    // If a file is selected, upload it first
-    if (selectedFile) {
-      const uploadFormData = new FormData();
-      uploadFormData.append("file", selectedFile);
-
-      const uploadRes = await fetch("/api/admin/reviews/upload", {
-        method: "POST",
-        credentials: "include",
-        body: uploadFormData,
-      });
-
-      const uploadData = await uploadRes.json();
-      if (!uploadData.success) {
-        setMessage(uploadData.error || "خطا در آپلود فایل");
-        setLoading(false);
-        return;
-      }
-
-      mediaUrl = uploadData.data.mediaUrl;
-      mediaType = uploadData.data.mediaType;
+    // Validate URL if provided
+    if (mediaUrl.trim() && !mediaType) {
+      setMessage("لطفاً نوع رسانه (تصویر یا ویدئو) را انتخاب کنید.");
+      setLoading(false);
+      return;
     }
 
-    // Save review with media
+    // Save review with media URL
     const res = await fetch("/api/admin/reviews", {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ fullName, comment, mediaUrl, mediaType }),
+      body: JSON.stringify({
+        fullName,
+        comment,
+        mediaUrl: mediaUrl.trim() || undefined,
+        mediaType: mediaUrl.trim() ? mediaType : null,
+      }),
     });
 
     const data = await res.json();
@@ -66,8 +53,8 @@ export function ReviewsAdminClient({
       setReviews((current) => [data.data, ...current]);
       setFullName("");
       setComment("");
-      setSelectedFile(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+      setMediaUrl("");
+      setMediaType("");
       setMessage("نظر با موفقیت ثبت شد.");
     } else {
       setMessage(data.error || "خطا در ثبت نظر.");
@@ -110,18 +97,44 @@ export function ReviewsAdminClient({
             placeholder="متن نظر مشتری را وارد کنید"
           />
           <div>
-            <label className="block text-sm font-medium mb-1">تصویر یا ویدئو (اختیاری)</label>
+            <label className="block text-sm font-medium mb-1">
+              لینک تصویر یا ویدئو (اختیاری)
+            </label>
             <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/ogg"
-              onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-              className="block w-full text-sm text-muted file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+              type="url"
+              value={mediaUrl}
+              onChange={(e) => setMediaUrl(e.target.value)}
+              placeholder="https://example.com/media.jpg"
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              dir="ltr"
             />
-            <p className="text-xs text-muted mt-1">
-              حداکثر حجم: تصویر ۵ مگابایت | ویدئو ۱۰۰ مگابایت
-            </p>
           </div>
+          {mediaUrl.trim() && (
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="mediaType"
+                  value="image"
+                  checked={mediaType === "image"}
+                  onChange={() => setMediaType("image")}
+                  className="accent-primary"
+                />
+                <span className="text-sm">تصویر</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="mediaType"
+                  value="video"
+                  checked={mediaType === "video"}
+                  onChange={() => setMediaType("video")}
+                  className="accent-primary"
+                />
+                <span className="text-sm">ویدئو</span>
+              </label>
+            </div>
+          )}
           {message && (
             <p className={`text-sm ${message.includes("خطا") ? "text-red-400" : "text-green-500"}`}>
               {message}
