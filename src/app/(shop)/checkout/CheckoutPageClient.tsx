@@ -67,7 +67,10 @@ export default function CheckoutPageClient() {
     }
   }, [availableMethods, recommendedShippingMethod, shippingMethod]);
 
-  const totalWeightGrams = items.reduce((sum, i) => sum + ((i.weight || 0) * i.quantity), 0);
+const totalWeightGrams = items.reduce(
+  (sum, i) => sum + (((i.packageWeight ?? i.weight ?? 0) * i.quantity)),
+  0
+);
   const totalWeightKg = totalWeightGrams / 1000;
   const shippingCost = getShippingCost(shippingMethod, settings, totalWeightKg);
   const finalTotal = totalPrice + shippingCost;

@@ -85,6 +85,7 @@ export interface Product {
 }
 
 export interface CartItem {
+  packageWeight: number | undefined;
   productId: string;
   name: string;
   price: number;

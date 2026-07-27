@@ -53,6 +53,7 @@ export function ProductDetailClient({
       // store sum weight for shipping calculations (net + package)
       weight: (product.netWeight || 0) + (product.packageWeight || 0),
       quantity,
+      packageWeight: undefined
     });
     
     setAdded(true);

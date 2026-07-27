@@ -185,6 +185,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         image: product.images[0] || "/Image/placeholder-product.svg",
         weight: (product.netWeight || 0) + (product.packageWeight || 0),
         quantity,
+        packageWeight: undefined
       });
       removeFromWishlist(product.id);
     },
