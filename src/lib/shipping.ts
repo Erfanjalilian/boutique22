@@ -23,7 +23,9 @@ function normalizeAddressValue(value?: string): string {
 export function isQomAddress(province?: string, city?: string): boolean {
   const values = [province, city].map(normalizeAddressValue);
 
-  return values.some((value) => value === "قم" || value === "qom" || value.includes("قم"));
+  return values.some(
+    (value) => value === "قم" || value === "qom" || value.includes("قم")
+  );
 }
 
 export function getAvailableShippingMethods(
@@ -39,7 +41,9 @@ export function getAvailableShippingMethods(
   return [ShippingMethod.TIPAX, ShippingMethod.POSTE_TAJAZZY];
 }
 
-export function getShippingMethodLabel(method: ShippingMethodValue): string {
+export function getShippingMethodLabel(
+  method: ShippingMethodValue
+): string {
   switch (method) {
     case ShippingMethod.PICKUP:
       return "پیک";
@@ -54,32 +58,49 @@ export function getShippingMethodLabel(method: ShippingMethodValue): string {
 
 export function getShippingCost(
   method: ShippingMethodValue,
-  settings?: Pick<SiteSettings, "pickupShippingCost" | "posteTajazziBaseCost" | "posteTajazziRatePerKg">,
+  settings?: Pick<
+    SiteSettings,
+    | "pickupShippingCost"
+    | "posteTajazziBaseCost"
+    | "posteTajazziRatePerKg"
+  >,
   totalWeightKg?: number
 ): number {
+  // پیک
   if (method === ShippingMethod.PICKUP) {
-    return typeof settings?.pickupShippingCost === "number" && settings.pickupShippingCost >= 0
+    return typeof settings?.pickupShippingCost === "number" &&
+      settings.pickupShippingCost >= 0
       ? settings.pickupShippingCost
       : DEFAULT_PICKUP_SHIPPING_COST;
   }
 
+  // پست پیشتاز
   if (method === ShippingMethod.POSTE_TAJAZZY) {
     const baseCost =
-      typeof settings?.posteTajazziBaseCost === "number" && settings.posteTajazziBaseCost >= 0
+      typeof settings?.posteTajazziBaseCost === "number" &&
+      settings.posteTajazziBaseCost >= 0
         ? settings.posteTajazziBaseCost
         : DEFAULT_POSTE_TAJAZZY_BASE_COST;
 
     if (totalWeightKg && totalWeightKg > 0) {
       const ratePerKg =
-        typeof settings?.posteTajazziRatePerKg === "number" && settings.posteTajazziRatePerKg >= 0
+        typeof settings?.posteTajazziRatePerKg === "number" &&
+        settings.posteTajazziRatePerKg >= 0
           ? settings.posteTajazziRatePerKg
           : DEFAULT_POSTE_TAJAZZY_RATE_PER_KG;
-      return baseCost + Math.ceil(totalWeightKg) * ratePerKg;
+
+      // تا ۱ کیلو فقط هزینه پایه
+      const extraWeightUnits = Math.max(
+        0,
+        Math.ceil(totalWeightKg) - 1
+      );
+
+      return baseCost + extraWeightUnits * ratePerKg;
     }
 
     return baseCost;
   }
 
-  // TIPAX is free (pay on delivery)
+  // تیپاکس (پس‌کرایه)
   return 0;
 }
