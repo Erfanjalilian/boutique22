@@ -181,11 +181,11 @@ export function ProductDetailClient({
             <div className="mt-6">
               <h3 className="text-sm font-medium text-muted mb-3">ویدئوی محصول</h3>
               <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-50 border border-border/50">
-                <iframe
+                <video
                   src={product.video}
                   className="absolute inset-0 w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
+                  controls
+                  playsInline
                   title={`ویدئوی ${product.name}`}
                 />
               </div>

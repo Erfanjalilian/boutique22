@@ -47,7 +47,7 @@ export function ProductForm({ product, categories }: ProductFormProps) {
       price: Number(form.price),
       categoryId: form.categoryId,
       images: form.images,
-      video: form.video || undefined,
+      video: form.video,
       featured: form.featured,
       bestSeller: form.bestSeller,
       newArrival: form.newArrival,
