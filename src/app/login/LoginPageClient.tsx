@@ -453,6 +453,86 @@ export default function LoginPageClient() {
               ورود به حساب
             </Button>
           </form>
+        ) : view === "register" ? (
+          <form onSubmit={handleRegister} className="space-y-5" noValidate>
+            <Input
+              label="نام کاربری"
+              placeholder="joojino"
+              value={username}
+              onChange={(e) => {
+                setUsername(e.target.value);
+                setError("");
+              }}
+              autoFocus
+              required
+            />
+            <Input
+              label="کلمه عبور"
+              placeholder="••••••••"
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setError("");
+              }}
+              required
+            />
+            <Input
+              label="نام و نام خانوادگی"
+              placeholder="علی محمدی"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                setError("");
+              }}
+              required
+            />
+            <Input
+              label="شماره موبایل"
+              placeholder="09123456789"
+              value={phone}
+              onChange={(e) => {
+                setPhone(e.target.value.replace(/\D/g, ""));
+                setError("");
+              }}
+              type="tel"
+              inputMode="numeric"
+              maxLength={11}
+              required
+            />
+            <Input
+              label="آدرس"
+              placeholder="تهران، خیابان ..."
+              value={address}
+              onChange={(e) => {
+                setAddress(e.target.value);
+                setError("");
+              }}
+              required
+            />
+            <Input
+              label="کد پستی"
+              placeholder="1234567890"
+              value={postalCode}
+              onChange={(e) => {
+                setPostalCode(e.target.value.replace(/\D/g, ""));
+                setError("");
+              }}
+              inputMode="numeric"
+              maxLength={10}
+              required
+            />
+
+            {error && (
+              <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-500">
+                {error}
+              </div>
+            )}
+
+            <Button type="submit" className="w-full" size="lg" loading={loading}>
+              ایجاد حساب
+            </Button>
+          </form>
         ) : null}
       </Card>
     </div>
