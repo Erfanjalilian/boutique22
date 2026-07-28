@@ -4,12 +4,12 @@ import type { Review } from "@/types";
 
 export function ReviewCard({ review }: { review: Review }) {
   return (
-    <div className="flex flex-col items-center justify-center text-center px-6 py-8 min-w-[280px] md:min-w-[400px]">
-      <p className="text-white/90 text-lg leading-relaxed mb-6 max-w-md">
+    <div className="flex flex-col items-center justify-center text-center px-4 sm:px-6 py-8 w-full max-w-full">
+      <p className="text-black text-sm sm:text-base md:text-lg leading-relaxed mb-6 w-full break-words">
         &ldquo;{review.comment}&rdquo;
       </p>
       {review.mediaUrl && review.mediaType === "image" && (
-        <div className="mb-4 w-full max-w-xs mx-auto">
+        <div className="mb-4 w-full max-w-[200px] sm:max-w-xs mx-auto">
           <img
             src={review.mediaUrl}
             alt={review.fullName}
@@ -19,7 +19,7 @@ export function ReviewCard({ review }: { review: Review }) {
         </div>
       )}
       {review.mediaUrl && review.mediaType === "video" && (
-        <div className="mb-4 w-full max-w-sm mx-auto">
+        <div className="mb-4 w-full max-w-[200px] sm:max-w-sm mx-auto">
           <video
             src={review.mediaUrl}
             controls
@@ -30,7 +30,7 @@ export function ReviewCard({ review }: { review: Review }) {
           </video>
         </div>
       )}
-      <p className="font-semibold text-white text-base">{review.fullName}</p>
+      <p className="font-semibold text-black text-sm sm:text-base">{review.fullName}</p>
     </div>
   );
 }
