@@ -13,6 +13,7 @@ import type {
   AboutInfo,
   SiteSettings,
   SiteBanner,
+  HeroBanner,
   OrderStatus,
   Review,
 } from "@/types";
@@ -202,6 +203,19 @@ export async function getReviews(): Promise<Review[]> {
 
 export async function saveReviews(reviews: Review[]): Promise<void> {
   await writeJson("reviews.json", reviews);
+}
+
+export async function getHeroBanner(): Promise<HeroBanner> {
+  return readJsonObject<HeroBanner>("hero-banner.json", {
+    image: "https://cdn.nody.ir/files/2021/07/14/nody2-%D8%B9%DA%A9%D8%B3-%D8%B7%D9%88%D8%B7%DB%8C-%D9%88-%D9%85%D8%B1%D8%BA-%D8%B9%D8%B4%D9%82-1626288570.jpg",
+    title: "کالکشن جدید ۱۴۰۴",
+    subtitle: "سبک خود را ارتقا دهید",
+    description: "اصالت و شرافت دنیای مجازی و حقیقی ندارد ، اصیل و شریف باشیم .",
+  });
+}
+
+export async function saveHeroBanner(banner: HeroBanner): Promise<void> {
+  await writeJson("hero-banner.json", banner);
 }
 
 export async function getDashboardStats() {

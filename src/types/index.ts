@@ -172,6 +172,13 @@ export interface SiteBanner {
   accent?: string;
 }
 
+export interface HeroBanner {
+  image: string;
+  title: string;
+  subtitle: string;
+  description: string;
+}
+
 export interface SessionPayload {
   userId: string;
   role: UserRole;
