@@ -69,6 +69,7 @@ export interface Product {
   description: string;
   price: number;
   images: string[];
+  video?: string;
   categoryId: string;
   brand?: string;
   sizes?: string[];

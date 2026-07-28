@@ -160,7 +160,7 @@ export function ProductDetailClient({
                   />
                 ))}
               </div>
-              <div className="flex gap-3 mt-4 overflow-x-auto pb-1">
+              <div className="hidden sm:flex gap-3 mt-4 overflow-x-auto pb-1">
                 {product.images.map((img, i) => (
                   <button
                     key={i}
@@ -174,6 +174,22 @@ export function ProductDetailClient({
                 ))}
               </div>
             </>
+          )}
+
+          {/* Product Video */}
+          {product.video && (
+            <div className="mt-6">
+              <h3 className="text-sm font-medium text-muted mb-3">ویدئوی محصول</h3>
+              <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-50 border border-border/50">
+                <iframe
+                  src={product.video}
+                  className="absolute inset-0 w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title={`ویدئوی ${product.name}`}
+                />
+              </div>
+            </div>
           )}
         </div>
 

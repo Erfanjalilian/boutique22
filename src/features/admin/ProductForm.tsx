@@ -19,12 +19,14 @@ export function ProductForm({ product, categories }: ProductFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [imageInput, setImageInput] = useState((product?.images || []).join("\n"));
+  const [videoInput, setVideoInput] = useState(product?.video || "");
   const [form, setForm] = useState({
     name: product?.name || "",
     description: product?.description || "",
     price: product?.price?.toString() || "",
     categoryId: product?.categoryId || "",
     images: product?.images || [],
+    video: product?.video || "",
     featured: product?.featured || false,
     bestSeller: product?.bestSeller || false,
     newArrival: product?.newArrival || false,
@@ -45,6 +47,7 @@ export function ProductForm({ product, categories }: ProductFormProps) {
       price: Number(form.price),
       categoryId: form.categoryId,
       images: form.images,
+      video: form.video || undefined,
       featured: form.featured,
       bestSeller: form.bestSeller,
       newArrival: form.newArrival,
@@ -161,6 +164,23 @@ export function ProductForm({ product, categories }: ProductFormProps) {
                 .map((item) => item.trim())
                 .filter(Boolean),
             });
+          }}
+        />
+      </Card>
+
+      {/* Video */}
+      <Card className="p-6 space-y-4">
+        <h3 className="font-medium">ویدئو (اختیاری)</h3>
+        <p className="text-sm text-muted">
+          لینک ویدئو محصول را وارد کنید (مثلاً از آپارات، یوتیوب و ...). ویدئو در صفحه جزییات محصول نمایش داده می‌شود.
+        </p>
+        <Input
+          label="لینک ویدئو"
+          placeholder="https://aparat.com/v/..."
+          value={videoInput}
+          onChange={(e) => {
+            setVideoInput(e.target.value);
+            setForm({ ...form, video: e.target.value });
           }}
         />
       </Card>
