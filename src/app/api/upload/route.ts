@@ -1,9 +1,9 @@
-import { getSession } from "@/lib/auth";
+import { getAdminSessionOrFallback } from "@/lib/auth";
 import { saveUploadedFile } from "@/lib/upload";
 import { apiSuccess, apiError } from "@/utils/api";
 
 export async function POST(request: Request) {
-  const session = await getSession();
+  const session = await getAdminSessionOrFallback();
   if (!session || session.role !== "admin") {
     return apiError("دسترسی غیرمجاز", 401);
   }

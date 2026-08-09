@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import type { HeroBanner } from "@/types";
 
 export function HeroBannerAdminClient({
@@ -57,12 +58,15 @@ export function HeroBannerAdminClient({
             این بنر در بالای صفحه اصلی (Hero Section) نمایش داده می‌شود. می‌توانید لینک عکس و متن‌ها را تغییر دهید.
           </p>
 
-          <Input
-            label="لینک تصویر (عکس آپلود نمی‌شود، لینک مستقیم وارد کنید)"
-            placeholder="https://example.com/image.jpg"
-            value={form.image}
-            onChange={(e) => setForm({ ...form, image: e.target.value })}
-          />
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-muted">تصویر بنر اصلی</label>
+            <ImageUpload
+              images={form.image ? [form.image] : []}
+              onChange={(images) => setForm({ ...form, image: images[0] || "" })}
+              multiple={false}
+              prefix="hero-banner"
+            />
+          </div>
 
           <Input
             label="عنوان"

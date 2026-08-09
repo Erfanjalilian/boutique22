@@ -17,13 +17,16 @@ export function ImageUpload({
   prefix = "product",
 }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
 
   async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files;
     if (!files?.length) return;
 
     setUploading(true);
+    setError("");
     const newImages = [...images];
+    let uploadedCount = 0;
 
     for (const file of Array.from(files)) {
       const formData = new FormData();
@@ -31,19 +34,30 @@ export function ImageUpload({
       formData.append("prefix", prefix);
 
       const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (data.success) {
+      let data: { success?: boolean; data?: { path?: string }; error?: string } = {};
+      try {
+        data = await res.json();
+      } catch {
+        data = { error: "پاسخ نامعتبر از سرور دریافت شد" };
+      }
+
+      if (res.ok && data.success && data.data?.path) {
         if (multiple) {
           newImages.push(data.data.path);
+          uploadedCount += 1;
         } else {
           onChange([data.data.path]);
           setUploading(false);
+          e.target.value = "";
           return;
         }
+      } else {
+        setError(data.error || "آپلود تصویر ناموفق بود");
       }
     }
 
-    onChange(newImages);
+    if (uploadedCount > 0) onChange(newImages);
+    e.target.value = "";
     setUploading(false);
   }
 
@@ -79,6 +93,7 @@ export function ImageUpload({
           {uploading ? "در حال آپلود..." : "آپلود تصویر"}
         </span>
       </label>
+      {error && <p className="text-sm text-red-500">{error}</p>}
     </div>
   );
 }

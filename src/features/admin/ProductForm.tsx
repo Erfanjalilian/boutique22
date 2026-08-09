@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/Textarea";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import type { Product, Category } from "@/types";
 
 interface ProductFormProps {
@@ -18,7 +19,6 @@ export function ProductForm({ product, categories }: ProductFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [imageInput, setImageInput] = useState((product?.images || []).join("\n"));
   const [videoInput, setVideoInput] = useState(product?.video || "");
   const [form, setForm] = useState({
     name: product?.name || "",
@@ -145,26 +145,15 @@ export function ProductForm({ product, categories }: ProductFormProps) {
       </Card>
 
       <Card className="p-6 space-y-4">
-        <h3 className="font-medium">تصاویر</h3>
+        <h3 className="font-medium">تصاویر محصول</h3>
         <p className="text-sm text-muted">
-          برای هر تصویر، یک لینک تصویر وارد کنید. لینک‌ها در API ذخیره می‌شود.
+          تصاویر محصول را از روی سیستم خود آپلود کنید. می‌توانید چند تصویر را همزمان انتخاب کنید.
         </p>
-        <Textarea
-          label="لینک‌های تصویر"
-          rows={5}
-          placeholder="هر لینک در یک خط"
-          value={imageInput}
-          onChange={(e) => {
-            const value = e.target.value;
-            setImageInput(value);
-            setForm({
-              ...form,
-              images: value
-                .split(/\n+/)
-                .map((item) => item.trim())
-                .filter(Boolean),
-            });
-          }}
+        <ImageUpload
+          images={form.images}
+          onChange={(images) => setForm({ ...form, images })}
+          multiple
+          prefix="product"
         />
       </Card>
 

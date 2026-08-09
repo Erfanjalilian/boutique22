@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import type { SiteBanner } from "@/types";
 
 const emptyBanner = (): SiteBanner => ({
@@ -105,7 +106,15 @@ export function BannersAdminClient() {
         </p>
         <Input label="عنوان" value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} />
         <Textarea label="توضیح" rows={3} value={draft.subtitle} onChange={(e) => setDraft({ ...draft, subtitle: e.target.value })} />
-        <Input label="لینک تصویر" value={draft.image} onChange={(e) => setDraft({ ...draft, image: e.target.value })} />
+        <div className="space-y-1.5">
+          <label className="block text-sm font-medium text-muted">تصویر بنر</label>
+          <ImageUpload
+            images={draft.image ? [draft.image] : []}
+            onChange={(images) => setDraft({ ...draft, image: images[0] || "" })}
+            multiple={false}
+            prefix="banner"
+          />
+        </div>
         <Input label="متن دکمه" value={draft.buttonText} onChange={(e) => setDraft({ ...draft, buttonText: e.target.value })} />
         <Input label="آدرس دکمه" value={draft.buttonHref} onChange={(e) => setDraft({ ...draft, buttonHref: e.target.value })} />
         <Input label="رنگ مکمل" value={draft.accent || ""} onChange={(e) => setDraft({ ...draft, accent: e.target.value })} />
