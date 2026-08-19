@@ -96,8 +96,8 @@ export function Footer({
         </div>
 
         <div className="mt-8 pt-8 border-t border-black/10 text-center text-sm text-black/60">
-          طراحی شده توسط عرفان جلیلیان
-        </div>
+        طراحی شده توسط محمد مهدی طاهری
+         </div>
       </div>
     </footer>
   );
