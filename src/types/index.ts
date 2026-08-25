@@ -105,6 +105,8 @@ export interface OrderItem {
   quantity: number;
   size?: string;
   color?: string;
+  weight?: number;
+  packageWeight?: number;
 }
 
 export interface Order {

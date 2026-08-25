@@ -25,6 +25,8 @@ const orderItemSchema = z.object({
   size: z.string().optional(),
   color: z.string().optional(),
   quantity: z.number().min(1),
+  weight: z.number().min(0).optional(),
+  packageWeight: z.number().min(0).optional(),
 });
 
 const createOrderSchema = z.object({
@@ -93,7 +95,8 @@ export async function POST(request: Request) {
           : ShippingMethod.TIPAX;
 
     const totalWeightGrams = items.reduce(
-      (sum, item) => sum + ((item as any).weight || 0) * item.quantity,
+      (sum, item) =>
+        sum + ((item.packageWeight ?? item.weight ?? 0) * item.quantity),
       0
     );
     const totalWeightKg = totalWeightGrams / 1000;

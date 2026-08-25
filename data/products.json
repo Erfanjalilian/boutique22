@@ -1,24 +1,5 @@
 [
   {
-    "id": "prod-001",
-    "name": "محصول ۱",
-    "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است",
-    "price": 890000,
-    "images": [
-      "/Image/product-1786275327635.png"
-    ],
-    "categoryId": "cat-001",
-    "brand": "NOVA",
-    "featured": true,
-    "bestSeller": true,
-    "newArrival": false,
-    "stock": 50,
-    "createdAt": "2025-01-15T00:00:00.000Z",
-    "video": "",
-    "netWeight": 0,
-    "packageWeight": 0
-  },
-  {
     "id": "prod-002",
     "name": "محصول ۲",
     "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است",

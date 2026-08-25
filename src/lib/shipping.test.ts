@@ -13,5 +13,6 @@ test("returns pickup + poste_tajazzi for Qom, tipax + poste_tajazzi for others",
   assert.equal(getShippingCost(ShippingMethod.POSTE_TAJAZZY), 100000);
   assert.equal(getShippingCost(ShippingMethod.POSTE_TAJAZZY, {}, 1), 100000);
   assert.equal(getShippingCost(ShippingMethod.POSTE_TAJAZZY, {}, 0.5), 100000);
+  assert.equal(getShippingCost(ShippingMethod.POSTE_TAJAZZY, {}, 1.1), 150000);
   assert.equal(getShippingCost(ShippingMethod.POSTE_TAJAZZY, {}, 3), 200000);
 });
