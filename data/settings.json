@@ -6,10 +6,25 @@
   "logo": "/Image/logo.svg",
   "footerText": "© ۱۴۰۴ بوتیک. تمامی حقوق محفوظ است. مد و زیبایی برای سبک زندگی مدرن.",
   "footerLinks": [
-    { "label": "درباره ما", "href": "/about" },
-    { "label": "تماس با ما", "href": "/contact" },
-    { "label": "حریم خصوصی", "href": "/privacy" },
-    { "label": "قوانین و مقررات", "href": "/terms" }
+    {
+      "label": "درباره ما",
+      "href": "/about"
+    },
+    {
+      "label": "تماس با ما",
+      "href": "/contact"
+    },
+    {
+      "label": "حریم خصوصی",
+      "href": "/privacy"
+    },
+    {
+      "label": "قوانین و مقررات",
+      "href": "/terms"
+    }
   ],
-  "zibalMerchant": "6a49233a60e89257882d7f04"
+  "zibalMerchant": "6a49233a60e89257882d7f04",
+  "pickupShippingCost": 60000,
+  "posteTajazziBaseCost": 30000,
+  "posteTajazziRatePerKg": 10000
 }
